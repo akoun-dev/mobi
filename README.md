@@ -67,3 +67,8 @@ export default tseslint.config([
   },
 ])
 ```
+
+## Continuous Integration
+
+This repo includes a GitHub Actions workflow that installs dependencies, runs ESLint, and executes the test suite on every push. The workflow file is located at `.github/workflows/node.yml`.
+
