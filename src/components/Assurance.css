@@ -1,0 +1,189 @@
+.assurance-bg {
+  background: var(--color-bg-light);
+  min-height: 100vh;
+  padding: 0 0 48px 0;
+}
+
+.assurance-hero {
+  background: linear-gradient(90deg, var(--color-blue-main) 0%, var(--color-blue-dark) 100%);
+  padding: 56px 0 36px 0;
+  text-align: center;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 8px 32px 0 #22314A22;
+  margin-bottom: 40px;
+}
+.assurance-hero-title {
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+}
+.assurance-hero-desc {
+  color: var(--color-blue-bg);
+  font-size: 1.15rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.assurance-container {
+  max-width: 1100px;
+  margin: -40px auto 0 auto;
+  background: none;
+  padding: 0 32px;
+}
+
+.assurance-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+.assurance-type-card {
+  background: var(--color-bg-card);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 #22314A12;
+  border: 1.5px solid var(--color-border);
+  padding: 36px 32px 28px 32px;
+  min-width: 220px;
+  max-width: 260px;
+  flex: 1 1 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: assurance-fadein 0.7s cubic-bezier(.4,0,.2,1);
+  opacity: 0;
+  transform: translateY(32px);
+  animation-fill-mode: forwards;
+}
+.assurance-type-card:hover {
+  box-shadow: 0 12px 36px 0 #2563EB22;
+  transform: translateY(-4px) scale(1.03);
+}
+.assurance-type-card:nth-child(1) { animation-delay: 0.1s; }
+.assurance-type-card:nth-child(2) { animation-delay: 0.2s; }
+.assurance-type-card:nth-child(3) { animation-delay: 0.3s; }
+.assurance-type-card:nth-child(4) { animation-delay: 0.4s; }
+@keyframes assurance-fadein {
+  to { opacity: 1; transform: none; }
+}
+.assurance-type-icon {
+  background: var(--color-blue-main);
+  color: #fff;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 18px;
+}
+.assurance-type-title {
+  color: var(--color-blue-dark);
+  font-size: 1.18rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.assurance-type-desc {
+  color: #334155;
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+.assurance-advantages {
+  margin-bottom: 48px;
+}
+.assurance-advantages-title {
+  color: var(--color-blue-dark);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  border-left: 4px solid var(--color-blue-main);
+  padding-left: 10px;
+}
+.assurance-advantages-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+}
+.assurance-advantage-item {
+  background: #F1F5F9;
+  border-radius: 14px;
+  border: 1.5px solid var(--color-border);
+  box-shadow: 0 2px 8px 0 #22314A0D;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.05rem;
+  color: var(--color-blue-dark);
+  min-width: 260px;
+  font-weight: 500;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.assurance-advantage-item svg {
+  color: var(--color-blue-main);
+}
+.assurance-advantage-item:hover {
+  box-shadow: 0 8px 32px 0 #2563EB22;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.assurance-cta {
+  text-align: center;
+  margin-top: 32px;
+}
+.assurance-cta-btn {
+  background: linear-gradient(90deg, var(--color-blue-main) 0%, var(--color-blue-dark) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 38px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  box-shadow: 0 2px 12px 0 #22314A0D;
+  display: inline-block;
+}
+.assurance-cta-btn:hover {
+  background: linear-gradient(90deg, var(--color-blue-dark) 0%, var(--color-blue-main) 100%);
+  color: var(--color-accent);
+  transform: scale(1.04);
+}
+
+@media (max-width: 900px) {
+  .assurance-container {
+    padding: 0 8px;
+  }
+  .assurance-hero-title {
+    font-size: 1.5rem;
+  }
+  .assurance-type-card {
+    min-width: 140px;
+    padding: 18px 8px 12px 8px;
+  }
+  .assurance-type-title {
+    font-size: 1rem;
+  }
+  .assurance-type-desc {
+    font-size: 0.98rem;
+  }
+  .assurance-advantage-item {
+    min-width: 120px;
+    font-size: 0.98rem;
+    padding: 10px 8px;
+  }
+  .assurance-cta-btn {
+    padding: 12px 18px;
+    font-size: 1rem;
+  }
+} 

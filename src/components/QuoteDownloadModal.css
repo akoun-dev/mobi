@@ -1,0 +1,141 @@
+.quotedl-modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 41, 59, 0.25);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.quotedl-modal {
+  background: var(--color-bg-card);
+  border-radius: 18px;
+  box-shadow: 0 8px 40px 0 #22314A33;
+  max-width: 380px;
+  width: 100%;
+  padding: 32px 28px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  animation: quotedl-fadein 0.4s cubic-bezier(.4,0,.2,1);
+}
+@keyframes quotedl-fadein {
+  from { opacity: 0; transform: scale(0.97) translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+.quotedl-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.quotedl-modal-title {
+  color: var(--color-blue-dark);
+  font-size: 1.18rem;
+  font-weight: 700;
+}
+.quotedl-modal-close {
+  background: none;
+  border: none;
+  color: var(--color-gray);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.quotedl-modal-close:hover {
+  background: #F3F4F6;
+}
+
+.quotedl-modal-content {
+  margin-bottom: 18px;
+}
+.quotedl-modal-insurer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.quotedl-modal-logo {
+  font-size: 2rem;
+  background: var(--color-blue-bg);
+  color: var(--color-blue-main);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quotedl-modal-insurer-name {
+  color: var(--color-blue-dark);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.quotedl-modal-insurer-type {
+  color: var(--color-gray);
+  font-size: 0.98rem;
+}
+.quotedl-modal-price-row {
+  background: var(--color-bg-light);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.quotedl-modal-price-label {
+  color: var(--color-blue-dark);
+  font-size: 1rem;
+}
+.quotedl-modal-price {
+  color: var(--color-blue-main);
+  font-size: 1.18rem;
+  font-weight: 700;
+}
+
+.quotedl-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+.quotedl-modal-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.quotedl-modal-btn-primary {
+  background: linear-gradient(90deg, var(--color-blue-vivid) 0%, var(--color-blue-main) 100%);
+  color: #fff;
+}
+.quotedl-modal-btn-primary:hover {
+  background: linear-gradient(90deg, var(--color-blue-main) 0%, var(--color-blue-vivid) 100%);
+}
+.quotedl-modal-btn-secondary {
+  background: #F3F4F6;
+  color: var(--color-blue-dark);
+}
+.quotedl-modal-btn-secondary:hover {
+  background: var(--color-border);
+}
+.quotedl-modal-btn-whatsapp {
+  background: #22C55E;
+  color: #fff;
+}
+.quotedl-modal-btn-whatsapp:hover {
+  background: #16A34A;
+} 

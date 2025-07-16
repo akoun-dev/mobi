@@ -1,0 +1,53 @@
+.header {
+    background: var(--color-footer);
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.08);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100vw;
+    margin: 0;
+  }
+  
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+  }
+  
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .car-icon {
+    height: 32px;
+    width: 32px;
+    color: var(--color-blue-vivid);
+  }
+  
+  .brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .header-nav {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .nav-link {
+    color: #E5E7EB;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .nav-link:hover {
+    color: #fff;
+  }

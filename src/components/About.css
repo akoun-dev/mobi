@@ -1,0 +1,191 @@
+.about-bg {
+  background: var(--color-bg-light);
+  min-height: 100vh;
+  padding: 0 0 48px 0;
+}
+
+.about-hero {
+  background: linear-gradient(90deg, var(--color-blue-main) 0%, var(--color-blue-dark) 100%);
+  padding: 48px 0 32px 0;
+  text-align: center;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 8px 32px 0 #22314A22;
+  margin-bottom: 32px;
+}
+.about-hero-title {
+  color: #fff;
+  font-size: 2.6rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+}
+.about-hero-desc {
+  color: var(--color-blue-bg);
+  font-size: 1.18rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: -48px auto 0 auto;
+  background: none;
+  padding: 0 32px;
+}
+
+.about-section {
+  background: var(--color-bg-card);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 #22314A1A;
+  border: 1px solid var(--color-border);
+  padding: 40px 48px 32px 48px;
+  margin-bottom: 32px;
+  animation: about-fadein 0.7s cubic-bezier(.4,0,.2,1);
+  opacity: 0;
+  transform: translateY(32px);
+  animation-fill-mode: forwards;
+}
+.about-section:nth-child(1) { animation-delay: 0.1s; }
+.about-section:nth-child(2) { animation-delay: 0.2s; }
+.about-section:nth-child(3) { animation-delay: 0.3s; }
+.about-section:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes about-fadein {
+  to { opacity: 1; transform: none; }
+}
+
+.about-title, .about-section-title {
+  color: var(--color-blue-dark);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.about-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0;
+}
+.about-section-title {
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+  border-left: 4px solid var(--color-blue-main);
+  padding-left: 10px;
+}
+
+.about-intro {
+  color: var(--color-gray);
+  font-size: 1.15rem;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.about-section-desc {
+  color: #334155;
+  font-size: 1.05rem;
+  margin-bottom: 0;
+}
+
+.about-values-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.about-value-badge {
+  font-size: 1.5rem;
+  margin-right: 8px;
+  background: var(--color-blue-main);
+  border-radius: 50%;
+  padding: 6px 10px;
+  color: #fff;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.about-value-badge:hover {
+  background: var(--color-blue-dark);
+  color: var(--color-accent);
+  transform: scale(1.08);
+}
+
+.about-team {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 10px;
+  justify-content: center;
+}
+.about-team-card {
+  background: #F1F5F9;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 #22314A0D;
+  border: 1px solid var(--color-border);
+  padding: 24px 28px 18px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 160px;
+  flex: 1 1 180px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  animation: about-fadein 0.9s cubic-bezier(.4,0,.2,1);
+  opacity: 0;
+  transform: translateY(32px);
+  animation-fill-mode: forwards;
+}
+.about-team-card:nth-child(1) { animation-delay: 0.2s; }
+.about-team-card:nth-child(2) { animation-delay: 0.3s; }
+.about-team-card:nth-child(3) { animation-delay: 0.4s; }
+.about-team-card:hover {
+  box-shadow: 0 8px 32px 0 #22314A22;
+  transform: translateY(-4px) scale(1.03);
+}
+.about-team-avatar {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  background: var(--color-blue-main);
+  color: #fff;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-team-name {
+  color: var(--color-blue-dark);
+  font-weight: 600;
+  font-size: 1.08rem;
+  margin-bottom: 2px;
+}
+.about-team-role {
+  color: #334155;
+  font-size: 0.99rem;
+}
+
+.about-contact {
+  text-align: center;
+  background: linear-gradient(90deg, var(--color-blue-main) 0%, var(--color-blue-dark) 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 12px 0 #22314A0D;
+}
+.about-contact .about-section-title {
+  color: #fff;
+  border-left: 4px solid #fff;
+}
+.about-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  font-weight: 500;
+}
+.about-link:hover {
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .about-container {
+    padding: 0 8px;
+  }
+  .about-section {
+    padding: 22px 8px 16px 8px;
+  }
+} 
