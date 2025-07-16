@@ -1,10 +1,11 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import './QuoteForm.css';
+import type { FormData } from '../types/types';
 
 interface QuoteFormProps {
   currentStep: number;
-  formData: any;
+  formData: FormData;
   onInputChange: (field: string, value: string) => void;
   onOptionToggle: (option: string) => void;
   onNextStep: () => void;
