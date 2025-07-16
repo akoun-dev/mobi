@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
 import { X, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react';
+import type { Quote } from '../types/types';
 import './Results.css';
-
-interface Quote {
-  id: number;
-  insurer: string;
-  logo: string;
-  price: number;
-  coverage: string;
-  deductible: number;
-  options: string[];
-  rating: number;
-  details: string;
-}
 
 interface ResultsProps {
   quotes: Quote[];
