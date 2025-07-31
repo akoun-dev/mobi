@@ -1,10 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import './QuoteForm.css';
+import { saveQuoteProgress, loadQuoteProgress, clearQuoteProgress } from '../utils/saveQuoteUtils';
+
+import type { QuoteFormData } from '../utils/saveQuoteUtils';
 
 interface QuoteFormProps {
-  currentStep: number;
-  formData: any;
+  initialStep: number;
+  initialFormData: QuoteFormData;
   onInputChange: (field: string, value: string) => void;
   onOptionToggle: (option: string) => void;
   onNextStep: () => void;
@@ -13,35 +16,54 @@ interface QuoteFormProps {
 }
 
 const QuoteForm: React.FC<QuoteFormProps> = ({
-  currentStep,
-  formData,
+  initialStep,
+  initialFormData,
   onInputChange,
-  onOptionToggle,
   onNextStep,
   onPrevStep,
   onResetForm
 }) => {
+  const [formData, setFormData] = useState(initialFormData);
+  const [currentStep, setCurrentStep] = useState(initialStep);
+
+  useEffect(() => {
+    // Restaurer la progression au montage
+    const saved = loadQuoteProgress();
+    if (saved) {
+      setFormData(saved.formData);
+      setCurrentStep(saved.currentStep);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Sauvegarder à chaque changement
+    saveQuoteProgress(formData, currentStep);
+  }, [formData, currentStep]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
     onInputChange(field, e.target.value);
   };
 
-  const handleOptionToggle = (option: string) => {
-    onOptionToggle(option);
-  };
+  // Suppression de handleOptionToggle non utilisé
 
-  // Nombre total d'étapes (0: Vous êtes, 1: Profil, 2: Véhicule, 3: Assurance)
-  const totalSteps = 4;
+  // Nombre total d'étapes (0: Profil, 1: Véhicule, 2: Assurance)
+  const totalSteps = 3;
 
   const [isPulsing, setIsPulsing] = useState(false);
   const nextBtnRef = useRef<HTMLButtonElement>(null);
 
-  const handleNextClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleNextClick = () => {
     setIsPulsing(true);
     setTimeout(() => {
       setIsPulsing(false);
       onNextStep();
-    }, 400); // Durée de l'animation
-  };
+      }, 400); // Durée de l'animation
+    };
+  
+    const handleResetForm = () => {
+      clearQuoteProgress();
+      onResetForm();
+    };
 
   return (
     <div className="quoteformw-bg">
@@ -49,7 +71,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
         <div className="quoteformw-header">
           <h2 className="quoteformw-title">Obtenir un devis personnalisé</h2>
           <button
-            onClick={onResetForm}
+            onClick={handleResetForm}
             className="quoteformw-close"
             aria-label="Fermer"
           >
@@ -69,28 +91,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
             ></div>
           </div>
         </div>
-        {/* Step 0: Vous êtes */}
+        {/* Step 0: Profil de l'assuré */}
         {currentStep === 0 && (
-          <div className="quoteformw-step">
-            <h3 className="quoteformw-step-title">Vous êtes</h3>
-            <div style={{ textAlign: 'center', margin: '24px 0' }}>
-              <div style={{ marginBottom: 16 }}>Je souhaite avoir un devis pour :</div>
-              <div className="quoteformw-radio-group" style={{ justifyContent: 'center' }}>
-                <label style={{ margin: '0 16px' }}>
-                  <input type="radio" name="devisPour" value="Moi même" checked={formData.devisPour === 'Moi même'} onChange={(e) => handleInputChange(e, 'devisPour')} required /> Moi même
-                </label>
-                <label style={{ margin: '0 16px' }}>
-                  <input type="radio" name="devisPour" value="Quelqu'un d'autre" checked={formData.devisPour === "Quelqu'un d'autre"} onChange={(e) => handleInputChange(e, 'devisPour')} required /> Quelqu'un d'autre
-                </label>
-                <label style={{ margin: '0 16px' }}>
-                  <input type="radio" name="devisPour" value="Une entreprise" checked={formData.devisPour === 'Une entreprise'} onChange={(e) => handleInputChange(e, 'devisPour')} required /> Une entreprise
-                </label>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* Step 1: Profil de l'assuré */}
-        {currentStep === 1 && (
           <div className="quoteformw-step">
             <h3 className="quoteformw-step-title">Profil de l'assuré</h3>
             <div className="quoteformw-info-box">
@@ -102,7 +104,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.nom}
-                  onChange={(e) => handleInputChange(e, 'nom')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'nom');
+                    setFormData({...formData, nom: e.target.value});
+                  }}
                   className="quoteformw-input"
                   placeholder="Nom"
                   required
@@ -113,7 +118,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.prenom}
-                  onChange={(e) => handleInputChange(e, 'prenom')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'prenom');
+                    setFormData({...formData, prenom: e.target.value});
+                  }}
                   className="quoteformw-input"
                   placeholder="Prénom"
                   required
@@ -200,7 +208,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           </div>
         )}
         {/* Step 2: Véhicule */}
-        {currentStep === 2 && (
+        {currentStep === 1 && (
           <div className="quoteformw-step">
             <h3 className="quoteformw-step-title">Votre véhicule</h3>
             <div className="quoteformw-info-box">
@@ -361,7 +369,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
           </div>
         )}
         {/* Step 3: Besoins d'assurance */}
-        {currentStep === 3 && (
+        {currentStep === 2 && (
           <div className="quoteformw-step">
             <h3 className="quoteformw-step-title">Votre assurance</h3>
             <div className="quoteformw-info-box">
@@ -426,7 +434,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                       name="typeSouscription"
                       value="Prédefinie"
                       checked={formData.typeSouscription === 'Prédefinie'}
-                      onClick={e => {
+                      onClick={() => {
                         if (formData.typeSouscription === 'Prédefinie') {
                           onInputChange('typeSouscription', '');
                         }
@@ -474,7 +482,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
             onClick={handleNextClick}
             className={`quoteformw-btn quoteformw-btn-primary${isPulsing ? ' animate-pulse' : ''}`}
           >
-            {currentStep === 3 ? 'Comparer les offres' : 'Suivant'}
+            {currentStep === 2 ? 'Comparer les offres' : 'Suivant'}
           </button>
         </div>
       </div>

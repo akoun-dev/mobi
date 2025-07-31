@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { initAnalytics, trackPageView, trackFormStart, trackFormComplete, trackQuoteSelected } from './services/analytics';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import Features from './components/Features';
@@ -19,6 +20,10 @@ import './LoadingScreen.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const App: React.FC = () => {
+  useEffect(() => {
+    initAnalytics();
+    trackPageView(window.location.pathname);
+  }, []);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [showResults, setShowResults] = useState(false);
   // Initialisation de currentStep à 0 pour afficher l'étape « Vous êtes » en premier
@@ -150,7 +155,7 @@ const App: React.FC = () => {
 
   const handleDownloadQuote = (quote: Quote) => {
     setSelectedQuote(quote);
-    // alert(`Devis PDF généré pour ${quote.insurer} - ${quote.price.toLocaleString()} FCFA`);
+    trackQuoteSelected(quote.insurer);
   };
 
   const sendQuoteByEmail = () => {

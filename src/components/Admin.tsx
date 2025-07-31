@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import type { AdminStats, QuoteRequest, User, InsurerOffer, ImportRecord } from '../types/types';
+import { convertToInsurer } from '../types/insurer';
+import AdminTarifs from './AdminTarifs';
 import './Admin.css';
 
 interface AdminProps {
@@ -714,79 +715,12 @@ const Admin: React.FC<AdminProps> = ({ user, onLogout }) => {
         )}
 
         {activeTab === 'insurers' && (
-          <div className="insurers-tab">
-            <div className="tab-header">
-              <h2>Gestion des assureurs et tarifs</h2>
-              <div className="tab-actions">
-                <button className="import-btn" onClick={() => setShowImportModal(true)}>
-                  📁 Importer tarifs
-                </button>
-                <button className="export-btn" onClick={() => handleExportData('insurers')}>
-                  📊 Exporter CSV
-                </button>
-              </div>
-            </div>
-
-            <div className="insurers-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Assureur</th>
-                    <th>Prix Mensuel</th>
-                    <th>Prix Annuel</th>
-                    <th>Type Couverture</th>
-                    <th>Options</th>
-                    <th>Franchise</th>
-                    <th>Statut</th>
-                    <th>Dernière MAJ</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {insurersData.map((insurer) => (
-                    <tr key={insurer.id}>
-                      <td>
-                        <div className="insurer-info">
-                          <span className="insurer-name">{insurer.insurerName}</span>
-                        </div>
-                      </td>
-                      <td>{insurer.monthlyPrice.toLocaleString()} FCFA</td>
-                      <td>{insurer.annualPrice.toLocaleString()} FCFA</td>
-                      <td>{insurer.coverageType}</td>
-                      <td>
-                        <div className="options-list">
-                          {insurer.includedOptions.slice(0, 2).map((option, index) => (
-                            <span key={index} className="option-tag">{option}</span>
-                          ))}
-                          {insurer.includedOptions.length > 2 && (
-                            <span className="option-more">+{insurer.includedOptions.length - 2}</span>
-                          )}
-                        </div>
-                      </td>
-                      <td>{insurer.deductible.toLocaleString()} FCFA</td>
-                      <td>
-                        <span className={`status-badge ${insurer.isActive ? 'status-active' : 'status-inactive'}`}>
-                          {insurer.isActive ? 'Actif' : 'Inactif'}
-                        </span>
-                      </td>
-                      <td>{formatDate(insurer.lastUpdated)}</td>
-                      <td>
-                        <div className="action-buttons">
-                          <button 
-                            className={`action-btn ${insurer.isActive ? 'deactivate' : 'activate'}`}
-                            onClick={() => handleToggleInsurerStatus(insurer.id)}
-                          >
-                            {insurer.isActive ? 'Désactiver' : 'Activer'}
-                          </button>
-                          <button className="action-btn edit">Modifier</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <AdminTarifs
+            insurersData={insurersData.map(convertToInsurer)}
+            onToggleStatus={handleToggleInsurerStatus}
+            onImport={() => setShowImportModal(true)}
+            onExport={() => handleExportData('insurers')}
+          />
         )}
 
         {activeTab === 'imports' && (
