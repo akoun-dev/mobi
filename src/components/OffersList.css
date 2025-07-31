@@ -133,15 +133,34 @@
   color: #555;
 }
 
+.offer-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
 .select-btn {
-  width: 100%;
+  flex: 1;
   padding: 0.75rem;
   background: #3498db;
   color: white;
   border: none;
   border-radius: 4px;
-  margin-top: 1rem;
   cursor: pointer;
+}
+
+.subscribe-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.select-btn:hover, .subscribe-btn:hover {
+  opacity: 0.9;
 }
 
 .no-results {

@@ -132,6 +132,14 @@
 .quotedl-modal-btn-secondary:hover {
   background: var(--color-border);
 }
+.quotedl-modal-btn-subscribe {
+  background: #4CAF50;
+  color: #fff;
+}
+.quotedl-modal-btn-subscribe:hover {
+  background: #45a049;
+}
+
 .quotedl-modal-btn-whatsapp {
   background: #22C55E;
   color: #fff;

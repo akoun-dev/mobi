@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { X, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react';
 import './Results.css';
 
@@ -12,6 +12,7 @@ interface Quote {
   options: string[];
   rating: number;
   details: string;
+  subscribeUrl: string;
 }
 
 interface ResultsProps {
@@ -28,11 +29,24 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
   });
   const [expandedQuote, setExpandedQuote] = useState<number | null>(null);
 
-  const filteredQuotes = quotes.filter(quote => {
-    return (!filters.insurer || quote.insurer.toLowerCase().includes(filters.insurer.toLowerCase())) &&
-           (!filters.coverage || quote.coverage === filters.coverage) &&
-           (!filters.maxPrice || quote.price <= parseInt(filters.maxPrice));
-  });
+  const filteredQuotes = useMemo(() => {
+    return quotes.filter(quote => {
+      // Filtre par assureur (recherche partielle insensible à la casse)
+      const insurerMatch = !filters.insurer ||
+        quote.insurer.toLowerCase().includes(filters.insurer.toLowerCase());
+      
+      // Filtre par type de couverture (correspondance exacte)
+      const coverageMatch = !filters.coverage ||
+        quote.coverage === filters.coverage;
+      
+      // Filtre par prix maximum
+      const priceMatch = !filters.maxPrice ||
+        quote.price <= parseInt(filters.maxPrice);
+      
+      // Filtre combiné
+      return insurerMatch && coverageMatch && priceMatch;
+    });
+  }, [quotes, filters.insurer, filters.coverage, filters.maxPrice]);
 
   return (
     <div className="results-bg">
@@ -74,6 +88,11 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
             className="results-filter-input"
           />
         </div>
+        {/* Indicateur de résultats */}
+        <div className="results-count">
+          {filteredQuotes.length} {filteredQuotes.length === 1 ? 'résultat' : 'résultats'} trouvés
+        </div>
+
         {/* Liste des devis */}
         <div className="results-list">
           {filteredQuotes.map((quote) => (
@@ -106,21 +125,23 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
               </div>
               <div className="results-card-actions">
                 <button
-                  onClick={() => setExpandedQuote(expandedQuote === quote.id ? null : quote.id)}
-                  className="results-details-btn"
-                >
-                  {expandedQuote === quote.id ? (
-                    <>Masquer les détails <ChevronUp size={16} /></>
-                  ) : (
-                    <>Voir les détails <ChevronDown size={16} /></>
-                  )}
-                </button>
-                <button
                   onClick={() => onDownloadQuote(quote)}
                   className="results-choose-btn"
                 >
                   Choisir cette couverture
                 </button>
+                <div className="results-secondary-actions">
+                  <button
+                    onClick={() => setExpandedQuote(expandedQuote === quote.id ? null : quote.id)}
+                    className="results-details-btn"
+                  >
+                    {expandedQuote === quote.id ? (
+                      <>Masquer les détails <ChevronUp size={16} /></>
+                    ) : (
+                      <>Voir les détails <ChevronDown size={16} /></>
+                    )}
+                  </button>
+                </div>
               </div>
               {expandedQuote === quote.id && (
                 <div className="results-card-details">

@@ -1,3 +1,43 @@
+.results-count {
+  color: var(--color-gray);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.results-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.results-main-action {
+  width: 100%;
+}
+
+.results-secondary-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.results-subscribe-btn {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: background-color 0.3s;
+}
+
+.results-subscribe-btn:hover {
+  background-color: #45a049;
+}
+
 .results-bg {
   background: var(--color-bg-light);
   min-height: 100vh;
@@ -184,8 +224,11 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   transition: color 0.2s;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: rgba(59, 130, 246, 0.1);
 }
 .results-details-btn:hover {
   color: var(--color-blue-main);
@@ -196,11 +239,13 @@
   color: #fff;
   border: none;
   border-radius: 8px;
-  padding: 10px 22px;
+  padding: 12px 24px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s;
+  width: 100%;
+  text-align: center;
 }
 .results-choose-btn:hover {
   background: linear-gradient(90deg, var(--color-blue-main) 0%, var(--color-blue-vivid) 100%);

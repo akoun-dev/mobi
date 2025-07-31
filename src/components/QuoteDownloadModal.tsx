@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Download, Mail, MessageSquare } from 'lucide-react';
+import { X, Download, Mail, MessageSquare, ExternalLink } from 'lucide-react';
 import type { Quote } from '../types/types';
 import './QuoteDownloadModal.css';
 
@@ -9,9 +9,17 @@ interface QuoteDownloadModalProps {
   onDownload: (quote: Quote) => void;
   onSendEmail: () => void;
   onSendWhatsApp: () => void;
+  onSubscribe?: (url: string) => void;
 }
 
-const QuoteDownloadModal: React.FC<QuoteDownloadModalProps> = ({ quote, onClose, onDownload, onSendEmail, onSendWhatsApp }) => {
+const QuoteDownloadModal: React.FC<QuoteDownloadModalProps> = ({
+  quote,
+  onClose,
+  onDownload,
+  onSendEmail,
+  onSendWhatsApp,
+  onSubscribe
+}) => {
   if (!quote) return null;
 
   return (
@@ -59,6 +67,17 @@ const QuoteDownloadModal: React.FC<QuoteDownloadModalProps> = ({ quote, onClose,
           >
             <MessageSquare size={18} /> Envoyer par WhatsApp
           </button>
+          {quote.subscribeUrl && (
+            <button
+              onClick={() => {
+                onSubscribe?.(quote.subscribeUrl);
+                onClose();
+              }}
+              className="quotedl-modal-btn quotedl-modal-btn-subscribe"
+            >
+              <ExternalLink size={18} /> Souscrire en ligne
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -24,20 +24,40 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
   };
 
   return (
-    <header className="header">
+    <header className="header" role="banner">
       <div className="header-container">
+        <div
+          className="header-logo"
+          onClick={handleLogoClick}
+          role="button"
+          aria-label="Retour à l'accueil"
+        >
+          <Car className="car-icon" aria-hidden="true" />
+          <span className="brand">NOLI Motor</span>
+        </div>
         
-          <div className="header-logo" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
-            <Car className="car-icon" />
-            <span className="brand">NOLI Motor</span>
-          </div>
-          <nav className="header-nav">
-            <Link to="/assurance" className="nav-link">Assurance</Link>
-            <Link to="/about" className="nav-link">À propos</Link>
-            <Link to="/faq" className="nav-link">FAQ</Link>
-          </nav>
-          
-          <div className="header-actions">
+        <nav className="header-nav" aria-label="Navigation principale">
+          <Link
+            to="/assurance"
+            className={`nav-link ${location.pathname === '/assurance' ? 'active' : ''}`}
+          >
+            Assurance
+          </Link>
+          <Link
+            to="/about"
+            className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
+          >
+            À propos
+          </Link>
+          <Link
+            to="/faq"
+            className={`nav-link ${location.pathname === '/faq' ? 'active' : ''}`}
+          >
+            FAQ
+          </Link>
+        </nav>
+        
+        <div className="header-actions" aria-label="Actions utilisateur">
             {user ? (
               <div className="user-menu">
                 <span className="user-name">Bonjour, {user.firstName}</span>

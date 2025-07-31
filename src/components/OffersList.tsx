@@ -5,9 +5,10 @@ import './OffersList.css';
 interface OffersListProps {
   offers: Quote[];
   onSelectOffer: (offerId: number) => void;
+  onSubscribeClick: (insurer: string) => void;
 }
 
-const OffersList: React.FC<OffersListProps> = ({ offers, onSelectOffer }) => {
+const OffersList: React.FC<OffersListProps> = ({ offers, onSelectOffer, onSubscribeClick }) => {
   const [filters, setFilters] = useState({
     minPrice: 0,
     maxPrice: 100000,
@@ -165,7 +166,22 @@ const OffersList: React.FC<OffersListProps> = ({ offers, onSelectOffer }) => {
               <p><strong>Franchise:</strong> {offer.deductible} FCFA</p>
               <p><strong>Options:</strong> {offer.options.join(', ')}</p>
             </div>
-            <button className="select-btn" aria-label={`Sélectionner l'offre ${offer.insurer}`}>Sélectionner</button>
+            <div className="offer-actions">
+              <button className="select-btn" aria-label={`Sélectionner l'offre ${offer.insurer}`}>
+                Sélectionner
+              </button>
+              <button
+                className="subscribe-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSubscribeClick(offer.insurer);
+                  window.open(offer.subscribeUrl, '_blank');
+                }}
+                aria-label={`Souscrire en ligne avec ${offer.insurer}`}
+              >
+                Souscrire en ligne
+              </button>
+            </div>
           </div>
         )))}
       </div>

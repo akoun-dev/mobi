@@ -1,31 +1,6 @@
-export interface QuoteFormData {
-  nom: string;
-  prenom: string;
-  sexe: string;
-  dateNaissance: string;
-  email: string;
-  telephone: string;
-  profession: string;
-  datePermis: string;
-  immatriculation: string;
-  nomCarteGrise: string;
-  marque: string;
-  genre: string;
-  categorie: string;
-  puissance: string;
-  energie: string;
-  prixNeuf: string;
-  prixVente: string;
-  dateMiseCirculation: string;
-  nbPlaces: string;
-  ville: string;
-  couleur: string;
-  dateEffet: string;
-  periode: string;
-  preferenceCompagnie: string;
-  formule: string;
-  typeSouscription: string;
-}
+import type { FormData } from '../types/types';
+
+export type QuoteFormData = FormData;
 
 export const saveQuoteProgress = (formData: QuoteFormData, currentStep: number) => {
   try {

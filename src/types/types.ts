@@ -8,6 +8,7 @@ export interface Quote {
     options: string[];
     rating: number;
     details: string;
+    subscribeUrl: string;
   }
   
   export interface FormData {
@@ -38,6 +39,21 @@ export interface Quote {
     formule: string;
     typeSouscription: string;
     options: string[];
+    // Nouveaux champs pour US02
+    antecedentsSinistres: string;
+    nombreSinistres: number;
+    typeSinistres: string[];
+    usagePrincipal: 'personnel' | 'professionnel' | 'mixte';
+    kilometrageAnnuel: number;
+    niveauFranchise: number;
+    optionsDetaillees: OptionsDetaillees;
+  }
+
+  export interface OptionsDetaillees {
+    assistanceRoute: boolean;
+    vehiculeRemplacement: boolean;
+    brisGlace: boolean;
+    protectionJuridique: boolean;
   }
   
   export interface Filters {

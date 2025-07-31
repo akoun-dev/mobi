@@ -15,7 +15,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import Admin from './components/Admin';
-import type { Quote, FormData, User } from './types/types';
+import type { FormData, User, OptionsDetaillees } from './types/types';
+import type { Quote } from './types/insurer';
 import './LoadingScreen.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -59,7 +60,19 @@ const App: React.FC = () => {
     preferenceCompagnie: '',
     formule: '',
     typeSouscription: '',
-    options: []
+    options: [],
+    antecedentsSinistres: '',
+    nombreSinistres: 0,
+    typeSinistres: [],
+    usagePrincipal: 'personnel',
+    kilometrageAnnuel: 0,
+    niveauFranchise: 0,
+    optionsDetaillees: {
+      assistanceRoute: false,
+      vehiculeRemplacement: false,
+      brisGlace: false,
+      protectionJuridique: false
+    }
   });
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
@@ -78,7 +91,8 @@ const App: React.FC = () => {
       deductible: 25000,
       options: ['Assistance 24h/24', 'Véhicule de remplacement', 'Protection juridique'],
       rating: 4.5,
-      details: 'Couverture complète avec assistance premium'
+      details: 'Couverture complète avec assistance premium',
+      subscribeUrl: 'https://www.nsia.com/auto/souscription'
     },
     {
       id: 2,
@@ -89,7 +103,8 @@ const App: React.FC = () => {
       deductible: 20000,
       options: ['Assistance 24h/24', 'Bris de glace', 'Vol/Incendie'],
       rating: 4.2,
-      details: 'Protection optimale pour votre véhicule'
+      details: 'Protection optimale pour votre véhicule',
+      subscribeUrl: 'https://www.atlantiqueassurance.com/souscription-auto'
     },
     {
       id: 3,
@@ -100,7 +115,8 @@ const App: React.FC = () => {
       deductible: 30000,
       options: ['Assistance dépannage', 'Protection juridique'],
       rating: 4.0,
-      details: 'Rapport qualité-prix excellent'
+      details: 'Rapport qualité-prix excellent',
+      subscribeUrl: 'https://sahamassurance.com/auto/souscription'
     },
     {
       id: 4,
@@ -111,11 +127,12 @@ const App: React.FC = () => {
       deductible: 15000,
       options: ['Assistance 24h/24', 'Véhicule de remplacement', 'Bris de glace', 'Vol/Incendie', 'Protection juridique'],
       rating: 4.8,
-      details: 'Couverture premium avec services exclusifs'
+      details: 'Couverture premium avec services exclusifs',
+      subscribeUrl: 'https://www.allianz-ci.com/souscription-auto'
     }
   ];
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | OptionsDetaillees) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -181,7 +198,19 @@ const App: React.FC = () => {
       preferenceCompagnie: '',
       formule: '',
       typeSouscription: '',
-      options: []
+      options: [],
+      antecedentsSinistres: '',
+      nombreSinistres: 0,
+      typeSinistres: [],
+      usagePrincipal: 'personnel',
+      kilometrageAnnuel: 0,
+      niveauFranchise: 0,
+      optionsDetaillees: {
+        assistanceRoute: false,
+        vehiculeRemplacement: false,
+        brisGlace: false,
+        protectionJuridique: false
+      }
     });
     setQuotes([]);
     setSelectedQuote(null);

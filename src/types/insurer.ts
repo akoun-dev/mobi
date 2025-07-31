@@ -28,4 +28,5 @@ export interface Quote {
   options: string[];
   rating: number;
   details: string;
+  subscribeUrl: string;
 }
