@@ -79,6 +79,7 @@ const QuoteDownloadModal: React.FC<QuoteDownloadModalProps> = ({
           {quote.subscribeUrl && (
             <button
               onClick={() => {
+                trackEvent('Quote', 'Subscribe', quote.insurer);
                 onSubscribe?.(quote.subscribeUrl);
                 onClose();
               }}
