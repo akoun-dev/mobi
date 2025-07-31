@@ -176,3 +176,12 @@ def generate_pdf():
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename=devis_{quote["insurer"]}.pdf'
     return response
+
+def send_email():
+    data = request.json
+    email = data.get('email')
+    quote = data.get('quote')
+    if not email or not quote:
+        return jsonify({'error': 'Missing data'}), 400
+    # For demo, just acknowledge receipt
+    return jsonify({'message': f'Email sent to {email}'})

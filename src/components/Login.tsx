@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import type { LoginForm } from '../types/types';
+import type { LoginForm, User } from '../types/types';
 import './Login.css';
 
 interface LoginProps {
-  onLogin: (user: any) => void;
+  onLogin: (user: User) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {

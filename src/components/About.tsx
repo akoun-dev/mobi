@@ -1,11 +1,5 @@
 import './About.css';
 
-const team = [
-  { name: 'Maurelle Prisca', role: 'Fondatrice & CEO', avatar: '🧑‍💼' },
-  { name: 'Jean Kouadio', role: 'Lead Développeur', avatar: '👨‍💻' },
-  { name: 'Fatou Diarra', role: 'Responsable Partenariats', avatar: '🤝' },
-];
-
 const About = () => (
   <div className="about-bg">
     <div className="about-section-flex">
