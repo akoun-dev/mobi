@@ -37,6 +37,8 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     }
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   useEffect(() => {
     console.log('Initial form data received:', initialFormData);
     console.log('Current form state:', formData);
@@ -57,8 +59,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     saveQuoteProgress(formData, currentStep);
   }, [formData, currentStep]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    field: string
+  ) => {
     onInputChange(field, e.target.value);
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
   };
 
   // Suppression de handleOptionToggle non utilisé
@@ -69,7 +77,40 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
   const [isPulsing, setIsPulsing] = useState(false);
   const nextBtnRef = useRef<HTMLButtonElement>(null);
 
+  const isValidDateFormat = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
+
+  const validateCurrentStep = (): boolean => {
+    const newErrors: Record<string, string> = {};
+    if (currentStep === 0) {
+      if (!isValidDateFormat(formData.dateNaissance)) {
+        newErrors.dateNaissance = 'Format invalide';
+      }
+      if (!isValidDateFormat(formData.datePermis)) {
+        newErrors.datePermis = 'Format invalide';
+      }
+      if (
+        isValidDateFormat(formData.dateNaissance) &&
+        isValidDateFormat(formData.datePermis)
+      ) {
+        const birth = new Date(formData.dateNaissance);
+        const license = new Date(formData.datePermis);
+        const minLicenseDate = new Date(birth);
+        minLicenseDate.setFullYear(minLicenseDate.getFullYear() + 18);
+        if (license < minLicenseDate) {
+          newErrors.datePermis =
+            "La date du permis doit être après l'âge légal (18 ans)";
+        }
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleNextClick = () => {
+    if (!validateCurrentStep()) {
+      return;
+    }
+
     console.log('Next button clicked - current step:', currentStep);
     setIsPulsing(true);
     setTimeout(() => {
@@ -168,9 +209,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                   type="date"
                   value={formData.dateNaissance}
                   onChange={(e) => handleInputChange(e, 'dateNaissance')}
-                  className="quoteformw-input"
+                  className={`quoteformw-input${errors.dateNaissance ? ' error' : ''}`}
                   required
                 />
+                {errors.dateNaissance && (
+                  <span className="error-message">{errors.dateNaissance}</span>
+                )}
               </div>
             </div>
             <div className="quoteformw-grid">
@@ -220,9 +264,12 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                   type="date"
                   value={formData.datePermis}
                   onChange={(e) => handleInputChange(e, 'datePermis')}
-                  className="quoteformw-input"
+                  className={`quoteformw-input${errors.datePermis ? ' error' : ''}`}
                   required
                 />
+                {errors.datePermis && (
+                  <span className="error-message">{errors.datePermis}</span>
+                )}
               </div>
             </div>
             <div className="quoteformw-grid">
