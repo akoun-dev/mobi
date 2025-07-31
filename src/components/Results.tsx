@@ -30,22 +30,24 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
   const [expandedQuote, setExpandedQuote] = useState<number | null>(null);
 
   const filteredQuotes = useMemo(() => {
-    return quotes.filter(quote => {
-      // Filtre par assureur (recherche partielle insensible à la casse)
-      const insurerMatch = !filters.insurer ||
-        quote.insurer.toLowerCase().includes(filters.insurer.toLowerCase());
-      
-      // Filtre par type de couverture (correspondance exacte)
-      const coverageMatch = !filters.coverage ||
-        quote.coverage === filters.coverage;
-      
-      // Filtre par prix maximum
-      const priceMatch = !filters.maxPrice ||
-        quote.price <= parseInt(filters.maxPrice);
-      
-      // Filtre combiné
-      return insurerMatch && coverageMatch && priceMatch;
-    });
+    return quotes
+      .filter(quote => {
+        // Filtre par assureur (recherche partielle insensible à la casse)
+        const insurerMatch = !filters.insurer ||
+          quote.insurer.toLowerCase().includes(filters.insurer.toLowerCase());
+
+        // Filtre par type de couverture (correspondance exacte)
+        const coverageMatch = !filters.coverage ||
+          quote.coverage === filters.coverage;
+
+        // Filtre par prix maximum
+        const priceMatch = !filters.maxPrice ||
+          quote.price <= parseInt(filters.maxPrice);
+
+        // Filtre combiné
+        return insurerMatch && coverageMatch && priceMatch;
+      })
+      .sort((a, b) => a.price - b.price);
   }, [quotes, filters.insurer, filters.coverage, filters.maxPrice]);
 
   return (

@@ -129,6 +129,78 @@ const App: React.FC = () => {
       rating: 4.8,
       details: 'Couverture premium avec services exclusifs',
       subscribeUrl: 'https://www.allianz-ci.com/souscription-auto'
+    },
+    {
+      id: 5,
+      insurer: "AXA Côte d'Ivoire",
+      logo: '🔰',
+      price: 80000,
+      coverage: 'Tous risques',
+      deductible: 22000,
+      options: ['Assistance 24h/24', 'Protection juridique'],
+      rating: 4.3,
+      details: 'Service client réactif et garanties solides',
+      subscribeUrl: 'https://www.axa.ci/auto/souscription'
+    },
+    {
+      id: 6,
+      insurer: 'Zenith Insurance',
+      logo: '💼',
+      price: 75000,
+      coverage: 'Tiers étendu',
+      deductible: 28000,
+      options: ['Assistance dépannage'],
+      rating: 3.9,
+      details: 'Formule économique pour petits budgets',
+      subscribeUrl: 'https://www.zenith.ci/souscription-auto'
+    },
+    {
+      id: 7,
+      insurer: 'Continental Assurance',
+      logo: '🚗',
+      price: 87000,
+      coverage: 'Tous risques',
+      deductible: 25000,
+      options: ['Véhicule de remplacement', 'Bris de glace'],
+      rating: 4.1,
+      details: 'Bon équilibre entre prix et garanties',
+      subscribeUrl: 'https://www.continental.ci/auto/souscription'
+    },
+    {
+      id: 8,
+      insurer: 'Fidelis Assurance',
+      logo: '🌀',
+      price: 90000,
+      coverage: 'Tous risques Premium',
+      deductible: 18000,
+      options: ['Vol/Incendie', 'Bris de glace', 'Protection juridique'],
+      rating: 4.4,
+      details: 'Couverture étendue pour véhicules neufs',
+      subscribeUrl: 'https://www.fidelis.ci/souscription-auto'
+    },
+    {
+      id: 9,
+      insurer: 'SUNU Assurance',
+      logo: '☀️',
+      price: 77000,
+      coverage: 'Tiers étendu',
+      deductible: 26000,
+      options: ['Assistance dépannage', 'Protection juridique'],
+      rating: 4.0,
+      details: 'Large réseau de garages partenaires',
+      subscribeUrl: 'https://www.sunu.com/souscription-auto'
+    },
+    {
+      id: 10,
+      insurer: 'ORA Insurance',
+      logo: '🌐',
+      price: 65000,
+      coverage: 'Tiers simple',
+      deductible: 35000,
+      options: ['Responsabilité civile'],
+      rating: 3.7,
+      details: 'Offre basique pour conducteurs expérimentés',
+      subscribeUrl: 'https://www.ora.ci/auto/souscription'
     }
   ];
 
