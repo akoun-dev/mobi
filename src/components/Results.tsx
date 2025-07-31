@@ -25,9 +25,17 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
   const [filters, setFilters] = useState({
     insurer: '',
     coverage: '',
-    maxPrice: ''
+    maxPrice: '',
+    deductible: '',
+    options: [] as string[]
   });
   const [expandedQuote, setExpandedQuote] = useState<number | null>(null);
+
+  const availableOptions = useMemo(() => {
+    const opts = new Set<string>();
+    quotes.forEach(q => q.options.forEach(o => opts.add(o)));
+    return Array.from(opts);
+  }, [quotes]);
 
   const filteredQuotes = useMemo(() => {
     return quotes
@@ -44,11 +52,19 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
         const priceMatch = !filters.maxPrice ||
           quote.price <= parseInt(filters.maxPrice);
 
+        // Filtre par franchise maximale
+        const deductibleMatch = !filters.deductible ||
+          quote.deductible <= parseInt(filters.deductible);
+
+        // Filtre par options sélectionnées (toutes les options doivent être présentes)
+        const optionsMatch = filters.options.length === 0 ||
+          filters.options.every(opt => quote.options.includes(opt));
+
         // Filtre combiné
-        return insurerMatch && coverageMatch && priceMatch;
+        return insurerMatch && coverageMatch && priceMatch && deductibleMatch && optionsMatch;
       })
       .sort((a, b) => a.price - b.price);
-  }, [quotes, filters.insurer, filters.coverage, filters.maxPrice]);
+  }, [quotes, filters.insurer, filters.coverage, filters.maxPrice, filters.deductible, filters.options]);
 
   return (
     <div className="results-bg">
@@ -89,6 +105,30 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
             onChange={e => setFilters({ ...filters, maxPrice: e.target.value })}
             className="results-filter-input"
           />
+          <input
+            type="number"
+            placeholder="Franchise max (FCFA)"
+            value={filters.deductible}
+            onChange={e => setFilters({ ...filters, deductible: e.target.value })}
+            className="results-filter-input"
+          />
+          <div className="results-options-filter">
+            {availableOptions.map(option => (
+              <label key={option} className="results-option-checkbox">
+                <input
+                  type="checkbox"
+                  checked={filters.options.includes(option)}
+                  onChange={e => {
+                    const opts = e.target.checked
+                      ? [...filters.options, option]
+                      : filters.options.filter(o => o !== option);
+                    setFilters({ ...filters, options: opts });
+                  }}
+                />
+                <span>{option}</span>
+              </label>
+            ))}
+          </div>
         </div>
         {/* Indicateur de résultats */}
         <div className="results-count">
