@@ -293,12 +293,25 @@ const App: React.FC = () => {
     trackQuoteSelected(quote.insurer);
   };
 
-  const sendQuoteByEmail = () => {
-    alert('Devis envoyé par email avec succès!');
+  const sendQuoteByEmail = async () => {
+    if (!selectedQuote) return;
+    try {
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, quote: selectedQuote })
+      });
+    } catch (err) {
+      console.error('Failed to send email', err);
+    }
   };
 
   const sendQuoteByWhatsApp = () => {
-    alert('Devis envoyé par WhatsApp avec succès!');
+    if (!selectedQuote) return;
+    const message = encodeURIComponent(
+      `Devis ${selectedQuote.insurer} - ${selectedQuote.price.toLocaleString()} FCFA`
+    );
+    window.open(`https://wa.me/?text=${message}`, '_blank');
   };
 
   const handleLogin = (userData: User) => {

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import type { RegisterForm } from '../types/types';
+import type { RegisterForm, User } from '../types/types';
 import './Register.css';
 
 interface RegisterProps {
-  onLogin: (user: any) => void;
+  onLogin: (user: User) => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onLogin }) => {

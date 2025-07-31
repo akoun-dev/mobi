@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from controllers import get_insurers, generate_quotes, generate_pdf
+from controllers import get_insurers, generate_quotes, generate_pdf, send_email
 
 app = Flask(__name__)
 CORS(app)
@@ -9,6 +9,7 @@ CORS(app)
 app.add_url_rule('/api/insurers', 'get_insurers', get_insurers, methods=['GET'])
 app.add_url_rule('/api/quotes', 'generate_quotes', generate_quotes, methods=['POST'])
 app.add_url_rule('/api/generate-pdf', 'generate_pdf', generate_pdf, methods=['POST'])
+app.add_url_rule('/api/send-email', 'send_email', send_email, methods=['POST'])
 
 # Handler pour les méthodes non autorisées
 @app.route('/api/quotes', methods=['GET'])

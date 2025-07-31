@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Download, Mail, MessageSquare, ExternalLink } from 'lucide-react';
+import { trackEvent } from '../services/analytics';
 import type { Quote } from '../types/types';
 import './QuoteDownloadModal.css';
 
@@ -56,13 +57,21 @@ const QuoteDownloadModal: React.FC<QuoteDownloadModalProps> = ({
             <Download size={18} /> Télécharger le devis PDF
           </button>
           <button
-            onClick={() => { onSendEmail(); onClose(); }}
+            onClick={() => {
+              trackEvent('Quote', 'Send Email');
+              onSendEmail();
+              onClose();
+            }}
             className="quotedl-modal-btn quotedl-modal-btn-secondary"
           >
             <Mail size={18} /> Envoyer par Email
           </button>
           <button
-            onClick={() => { onSendWhatsApp(); onClose(); }}
+            onClick={() => {
+              trackEvent('Quote', 'Send WhatsApp');
+              onSendWhatsApp();
+              onClose();
+            }}
             className="quotedl-modal-btn quotedl-modal-btn-whatsapp"
           >
             <MessageSquare size={18} /> Envoyer par WhatsApp

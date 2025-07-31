@@ -20,7 +20,7 @@ const Assurance = () => (
       <div className="assurance-hero-title">Comparez les assurances en toute simplicité</div>
       <div className="assurance-hero-desc">
         Trouvez la meilleure assurance auto, moto, habitation ou santé en quelques clics.<br />
-        Comparez, choisissez, économisez !
+        Comparez, choisissez, économisez !
       </div>
     </div>
     <div className="assurance-container">
@@ -34,7 +34,7 @@ const Assurance = () => (
         ))}
       </div>
       <div className="assurance-advantages">
-        <h2 className="assurance-advantages-title">Pourquoi choisir NOLI Motor ?</h2>
+        <h2 className="assurance-advantages-title">Pourquoi choisir NOLI Motor ?</h2>
         <ul className="assurance-advantages-list">
           {avantages.map((a, i) => (
             <li key={i} className="assurance-advantage-item">{a.icon}<span>{a.text}</span></li>
