@@ -1,0 +1,86 @@
+.hero-section {
+  background: linear-gradient(to bottom, #1F3F74, #2D6AA0, #3E8BC4);
+
+    padding: 5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ajout d'une image décorative en fond (exemple: pattern, vague, etc.) */
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: url('/public/vehicle-bg.png') no-repeat right bottom;
+    background-size: 55vw auto;
+    opacity: 0.18;
+    pointer-events: none;
+    transition: background-image 0.3s;
+  }
+  
+  .hero-container {
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    text-shadow: 0 2px 8px #22314A88;
+  }
+  
+  .hero-title-highlight {
+    color: #fff;
+    font-size: 3.2rem;
+    font-weight: 800;
+    text-shadow: 0 2px 8px #22314A88;
+  }
+  
+  .hero-description {
+    font-size: 1.18rem;
+    color: #fff;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    text-shadow: 0 2px 8px #22314A88;
+  }
+  
+  .hero-button {
+    background: var(--color-footer);
+    color: #fff;
+    font-size: 1.15rem;
+    padding: 1rem 2.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 24px 0 rgba(37,99,235,0.15);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .hero-button:hover {
+    background: #fff;
+    color: #22314A;
+    transform: scale(1.04);
+  }
+  
+  .hero-arrow {
+    margin-left: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline;
+  }
