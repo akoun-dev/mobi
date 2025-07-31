@@ -194,7 +194,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Sexe*</label>
                 <select
                   value={formData.sexe}
-                  onChange={(e) => handleInputChange(e, 'sexe')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'sexe');
+                    setFormData({ ...formData, sexe: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
@@ -208,7 +211,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="date"
                   value={formData.dateNaissance}
-                  onChange={(e) => handleInputChange(e, 'dateNaissance')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'dateNaissance');
+                    setFormData({ ...formData, dateNaissance: e.target.value });
+                  }}
                   className={`quoteformw-input${errors.dateNaissance ? ' error' : ''}`}
                   required
                 />
@@ -223,7 +229,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => handleInputChange(e, 'email')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'email');
+                    setFormData({ ...formData, email: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="exemple@email.com"
                   required
@@ -234,7 +243,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="tel"
                   value={formData.telephone}
-                  onChange={(e) => handleInputChange(e, 'telephone')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'telephone');
+                    setFormData({ ...formData, telephone: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="07 00 00 00 00"
                   required
@@ -246,7 +258,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Profession / Catégorie socio professionnelle*</label>
                 <select
                   value={formData.profession}
-                  onChange={(e) => handleInputChange(e, 'profession')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'profession');
+                    setFormData({ ...formData, profession: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
@@ -263,7 +278,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="date"
                   value={formData.datePermis}
-                  onChange={(e) => handleInputChange(e, 'datePermis')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'datePermis');
+                    setFormData({ ...formData, datePermis: e.target.value });
+                  }}
                   className={`quoteformw-input${errors.datePermis ? ' error' : ''}`}
                   required
                 />
@@ -277,7 +295,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Antécédents de sinistres (3 dernières années)*</label>
                 <select
                   value={formData.antecedentsSinistres}
-                  onChange={(e) => handleInputChange(e, 'antecedentsSinistres')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'antecedentsSinistres');
+                    setFormData({ ...formData, antecedentsSinistres: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
@@ -304,7 +325,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.immatriculation}
-                  onChange={(e) => handleInputChange(e, 'immatriculation')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'immatriculation');
+                    setFormData({ ...formData, immatriculation: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="Ex: 1234AB01"
                   required
@@ -317,7 +341,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.nomCarteGrise}
-                  onChange={(e) => handleInputChange(e, 'nomCarteGrise')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'nomCarteGrise');
+                    setFormData({ ...formData, nomCarteGrise: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="Entrez le nom figurant sur la carte grise"
                   required
@@ -328,7 +355,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.marque}
-                  onChange={(e) => handleInputChange(e, 'marque')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'marque');
+                    setFormData({ ...formData, marque: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="Sélectionner la marque de votre véhicule"
                   required
@@ -341,7 +371,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.genre}
-                  onChange={(e) => handleInputChange(e, 'genre')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'genre');
+                    setFormData({ ...formData, genre: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -351,7 +384,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.categorie}
-                  onChange={(e) => handleInputChange(e, 'categorie')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'categorie');
+                    setFormData({ ...formData, categorie: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -363,7 +399,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.puissance}
-                  onChange={(e) => handleInputChange(e, 'puissance')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'puissance');
+                    setFormData({ ...formData, puissance: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -388,7 +427,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="number"
                   value={formData.prixNeuf}
-                  onChange={(e) => handleInputChange(e, 'prixNeuf')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'prixNeuf');
+                    setFormData({ ...formData, prixNeuf: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="FCFA"
                   required
@@ -399,7 +441,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="number"
                   value={formData.prixVente}
-                  onChange={(e) => handleInputChange(e, 'prixVente')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'prixVente');
+                    setFormData({ ...formData, prixVente: e.target.value });
+                  }}
                   className="quoteformw-input"
                   placeholder="FCFA"
                   required
@@ -412,7 +457,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="date"
                   value={formData.dateMiseCirculation}
-                  onChange={(e) => handleInputChange(e, 'dateMiseCirculation')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'dateMiseCirculation');
+                    setFormData({ ...formData, dateMiseCirculation: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -422,7 +470,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="number"
                   value={formData.nbPlaces}
-                  onChange={(e) => handleInputChange(e, 'nbPlaces')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'nbPlaces');
+                    setFormData({ ...formData, nbPlaces: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -433,7 +484,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Ville/Zone de stationnement*</label>
                 <select
                   value={formData.ville}
-                  onChange={(e) => handleInputChange(e, 'ville')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'ville');
+                    setFormData({ ...formData, ville: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
@@ -450,7 +504,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="text"
                   value={formData.couleur}
-                  onChange={(e) => handleInputChange(e, 'couleur')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'couleur');
+                    setFormData({ ...formData, couleur: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -461,7 +518,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Usage principal du véhicule*</label>
                 <select
                   value={formData.usagePrincipal}
-                  onChange={(e) => handleInputChange(e, 'usagePrincipal')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'usagePrincipal');
+                    setFormData({ ...formData, usagePrincipal: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
@@ -476,7 +536,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="number"
                   value={formData.kilometrageAnnuel}
-                  onChange={(e) => handleInputChange(e, 'kilometrageAnnuel')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'kilometrageAnnuel');
+                    setFormData({ ...formData, kilometrageAnnuel: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -488,7 +551,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="number"
                   value={formData.niveauFranchise}
-                  onChange={(e) => handleInputChange(e, 'niveauFranchise')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'niveauFranchise');
+                    setFormData({ ...formData, niveauFranchise: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -509,7 +575,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <input
                   type="date"
                   value={formData.dateEffet}
-                  onChange={(e) => handleInputChange(e, 'dateEffet')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'dateEffet');
+                    setFormData({ ...formData, dateEffet: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 />
@@ -518,7 +587,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Périodicité/Durée du contrat*</label>
                 <select
                   value={formData.periode}
-                  onChange={(e) => handleInputChange(e, 'periode')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'periode');
+                    setFormData({ ...formData, periode: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
@@ -535,7 +607,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <label className="quoteformw-label">Avez-vous une préférence pour une compagnie particulière ?</label>
                 <select
                   value={formData.preferenceCompagnie}
-                  onChange={(e) => handleInputChange(e, 'preferenceCompagnie')}
+                  onChange={(e) => {
+                    handleInputChange(e, 'preferenceCompagnie');
+                    setFormData({ ...formData, preferenceCompagnie: e.target.value });
+                  }}
                   className="quoteformw-input"
                   required
                 >
