@@ -311,4 +311,19 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-} 
+}
+
+.results-options-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.results-option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: var(--color-blue-dark);
+}

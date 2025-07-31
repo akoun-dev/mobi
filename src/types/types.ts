@@ -56,10 +56,12 @@ export interface Quote {
     protectionJuridique: boolean;
   }
   
-  export interface Filters {
+export interface Filters {
     insurer: string;
     coverage: string;
     maxPrice: string;
+    deductible: string;
+    options: string[];
   }
 
   // Nouveaux types pour l'espace clients et admin
