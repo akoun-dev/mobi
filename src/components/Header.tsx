@@ -117,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout, onCompareClick }) => {
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="login-btn" onClick={handleLinkClick}>
+              <Link to="/login" className="compare-btn" onClick={handleLinkClick}>
                 Connexion
               </Link>
             )}
