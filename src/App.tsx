@@ -322,6 +322,14 @@ const App: React.FC = () => {
     setUser(null);
   };
 
+  const handleCompareClick = () => {
+    console.log('Compare button clicked - setting showQuoteForm to true');
+    trackEvent('CTA', 'Hero Compare Click');
+    setShowQuoteForm(true);
+    setShowResults(false);
+    setCurrentStep(0);
+  };
+
   if (loading) {
     return (
       <div className="loading-bg">
@@ -336,19 +344,13 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Header user={user} onLogout={handleLogout} />
+      <Header user={user} onLogout={handleLogout} onCompareClick={handleCompareClick} />
       <Routes>
         <Route path="/" element={
           <div className="main-content min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             {!showQuoteForm && !showResults && (
               <>
-                <HeroSection onCompareClick={() => {
-                  console.log('Compare button clicked - setting showQuoteForm to true');
-                  trackEvent('CTA', 'Hero Compare Click');
-                  setShowQuoteForm(true);
-                  setShowResults(false);
-                  setCurrentStep(0);
-                }} />
+                <HeroSection onCompareClick={handleCompareClick} />
                 <Features />
                 <Partners />
               </>
