@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { initAnalytics, trackPageView, trackFormStart, trackFormComplete, trackQuoteSelected } from './services/analytics';
+import { initAnalytics, trackPageView, trackQuoteSelected } from './services/analytics';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import Features from './components/Features';
@@ -24,23 +24,42 @@ const App: React.FC = () => {
     initAnalytics();
     trackPageView(window.location.pathname);
   }, []);
+  // Initialisation des états
+  const [currentStep, setCurrentStep] = useState(0);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  // Initialisation de currentStep à 0 pour afficher l'étape « Vous êtes » en premier
-  const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    console.log('Form state:', { showQuoteForm, showResults, currentStep });
+  }, [showQuoteForm, showResults, currentStep]);
   const [formData, setFormData] = useState<FormData>({
-    age: '',
-    licenseYears: '',
-    accidents: '',
-    usage: '',
-    annualKm: '',
-    vehicleValue: '',
-    energy: '',
-    registrationDate: '',
-    seats: '',
-    coverage: '',
-    options: [],
-    deductible: ''
+    nom: '',
+    prenom: '',
+    sexe: '',
+    dateNaissance: '',
+    email: '',
+    telephone: '',
+    profession: '',
+    datePermis: '',
+    immatriculation: '',
+    nomCarteGrise: '',
+    marque: '',
+    genre: '',
+    categorie: '',
+    puissance: '',
+    energie: '',
+    prixNeuf: '',
+    prixVente: '',
+    dateMiseCirculation: '',
+    nbPlaces: '',
+    ville: '',
+    couleur: '',
+    dateEffet: '',
+    periode: '',
+    preferenceCompagnie: '',
+    formule: '',
+    typeSouscription: '',
+    options: []
   });
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
@@ -113,9 +132,9 @@ const App: React.FC = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 2) { // 0, 1, 2 (3 étapes au total)
       setCurrentStep(currentStep + 1);
-    } else {
+    } else if (currentStep === 2) { // Dernière étape
       setLoading(true);
       setTimeout(() => {
         setQuotes(mockQuotes);
@@ -136,18 +155,33 @@ const App: React.FC = () => {
     setCurrentStep(0);
     setShowResults(false);
     setFormData({
-      age: '',
-      licenseYears: '',
-      accidents: '',
-      usage: '',
-      annualKm: '',
-      vehicleValue: '',
-      energy: '',
-      registrationDate: '',
-      seats: '',
-      coverage: '',
-      options: [],
-      deductible: ''
+      nom: '',
+      prenom: '',
+      sexe: '',
+      dateNaissance: '',
+      email: '',
+      telephone: '',
+      profession: '',
+      datePermis: '',
+      immatriculation: '',
+      nomCarteGrise: '',
+      marque: '',
+      genre: '',
+      categorie: '',
+      puissance: '',
+      energie: '',
+      prixNeuf: '',
+      prixVente: '',
+      dateMiseCirculation: '',
+      nbPlaces: '',
+      ville: '',
+      couleur: '',
+      dateEffet: '',
+      periode: '',
+      preferenceCompagnie: '',
+      formule: '',
+      typeSouscription: '',
+      options: []
     });
     setQuotes([]);
     setSelectedQuote(null);
@@ -194,14 +228,19 @@ const App: React.FC = () => {
           <div className="main-content min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
             {!showQuoteForm && !showResults && (
               <>
-                <HeroSection onCompareClick={() => setShowQuoteForm(true)} />
+                <HeroSection onCompareClick={() => {
+                  console.log('Compare button clicked - setting showQuoteForm to true');
+                  setShowQuoteForm(true);
+                  setShowResults(false);
+                  setCurrentStep(0);
+                }} />
                 <Features />
                 <Partners />
               </>
             )}
             {showQuoteForm && !showResults && (
               <QuoteForm
-                currentStep={currentStep}
+                initialStep={currentStep}
                 formData={formData}
                 onInputChange={handleInputChange}
                 onOptionToggle={handleOptionToggle}

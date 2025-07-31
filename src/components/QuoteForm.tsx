@@ -7,7 +7,7 @@ import type { QuoteFormData } from '../utils/saveQuoteUtils';
 
 interface QuoteFormProps {
   initialStep: number;
-  initialFormData: QuoteFormData;
+  formData: QuoteFormData;
   onInputChange: (field: string, value: string) => void;
   onOptionToggle: (option: string) => void;
   onNextStep: () => void;
@@ -16,22 +16,27 @@ interface QuoteFormProps {
 }
 
 const QuoteForm: React.FC<QuoteFormProps> = ({
-  initialStep,
-  initialFormData,
+  initialStep: currentStep,
+  formData: initialFormData,
   onInputChange,
   onNextStep,
   onPrevStep,
   onResetForm
 }) => {
   const [formData, setFormData] = useState(initialFormData);
-  const [currentStep, setCurrentStep] = useState(initialStep);
+
+  useEffect(() => {
+    console.log('Initial form data received:', initialFormData);
+    console.log('Current form state:', formData);
+    console.log('Current step:', currentStep);
+  }, [currentStep]);
 
   useEffect(() => {
     // Restaurer la progression au montage
     const saved = loadQuoteProgress();
     if (saved) {
       setFormData(saved.formData);
-      setCurrentStep(saved.currentStep);
+      // Ne pas modifier currentStep ici - géré par le parent
     }
   }, []);
 
@@ -53,12 +58,14 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
   const nextBtnRef = useRef<HTMLButtonElement>(null);
 
   const handleNextClick = () => {
+    console.log('Next button clicked - current step:', currentStep);
     setIsPulsing(true);
     setTimeout(() => {
       setIsPulsing(false);
+      console.log('Calling parent onNextStep');
       onNextStep();
-      }, 400); // Durée de l'animation
-    };
+    }, 400); // Durée de l'animation
+  };
   
     const handleResetForm = () => {
       clearQuoteProgress();
@@ -81,13 +88,13 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
         {/* Progress Bar */}
         <div className="quoteformw-progress">
           <div className="quoteformw-progress-labels">
-            <span>Étape {currentStep + 1} sur {totalSteps}</span>
-            <span>{Math.round(((currentStep + 1) / totalSteps) * 100)}% complété</span>
+            <span>Étape {Math.min(currentStep + 1, totalSteps)} sur {totalSteps}</span>
+            <span>{Math.min(Math.round(((currentStep + 1) / totalSteps) * 100), 100)}% complété</span>
           </div>
           <div className="quoteformw-progress-bar">
             <div
               className="quoteformw-progress-bar-inner"
-              style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
+              style={{ width: `${Math.min(((currentStep + 1) / totalSteps) * 100, 100)}%` }}
             ></div>
           </div>
         </div>
