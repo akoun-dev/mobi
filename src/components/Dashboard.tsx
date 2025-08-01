@@ -242,28 +242,30 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         </div>
       </div>
 
-      <div className="dashboard-tabs">
-        <button
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Vue d'ensemble
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-        >
-          Historique
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
-          onClick={() => setActiveTab('profile')}
-        >
-          Profil
-        </button>
-      </div>
+      <div className="dashboard-layout">
+        <aside className="dashboard-sidebar">
+          <button
+            className={`sidebar-btn ${activeTab === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            Vue d'ensemble
+          </button>
+          <button
+            className={`sidebar-btn ${activeTab === 'history' ? 'active' : ''}`}
+            onClick={() => setActiveTab('history')}
+          >
+            Historique
+          </button>
+          <button
+            className={`sidebar-btn ${activeTab === 'profile' ? 'active' : ''}`}
+            onClick={() => setActiveTab('profile')}
+          >
+            Profil
+          </button>
+        </aside>
 
-      <div className="dashboard-content">
+        <main className="dashboard-main">
+          <div className="dashboard-content">
         {activeTab === 'overview' && (
           <div className="overview-tab">
             <div className="stats-grid">
@@ -418,6 +420,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
             </div>
           </div>
         )}
+          </div>
+        </main>
       </div>
 
       {/* Modal de modification du profil */}
