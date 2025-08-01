@@ -1,10 +1,20 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import type { FormData as QuoteFormData, OptionsDetaillees } from '../types/types';
+
 import './QuoteForm.css';
 import Tooltip from './Tooltip';
 import { saveQuoteProgress, loadQuoteProgress, clearQuoteProgress } from '../utils/saveQuoteUtils';
+import {
+  trackFormStart,
+  trackFormComplete,
+  trackFormStep,
+  trackConversion,
+  trackEvent,
+  trackQuoteSelected
+} from '../services/analytics';
 
-import type { FormData as QuoteFormData, OptionsDetaillees } from '../types/types';
+
 
 interface QuoteFormProps {
   initialStep: number;
@@ -14,19 +24,21 @@ interface QuoteFormProps {
   onNextStep: () => void;
   onPrevStep: () => void;
   onResetForm: () => void;
+  onSubmit: (values: { selectedInsurer: string; selectedPrice: number }) => void;
 }
 
-const QuoteForm: React.FC<QuoteFormProps> = ({
-  initialStep: currentStep,
-  formData: initialFormData,
-  onInputChange,
-  onNextStep,
-  onPrevStep,
-  onResetForm
-}) => {
-  // Filtres déplacés dans FilterPanel
-
-  const [formData, setFormData] = useState({
+const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
+  const {
+    initialStep,
+    formData: initialFormData,
+    onInputChange,
+    onNextStep,
+    onPrevStep,
+    onResetForm
+  } = props;
+  
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [formData, setFormData] = useState<QuoteFormData>({
     ...initialFormData,
     energie: initialFormData.energie || 'Essence',
     formule: initialFormData.formule || 'Tiers Simple',
@@ -41,12 +53,18 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    console.log('Initial form data received:', initialFormData);
-    console.log('Current form state:', formData);
-    console.log('Current step:', currentStep);
-  }, [currentStep]);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Initial form data received:', initialFormData);
+      console.log('Current form state:', formData);
+      console.log('Current step:', currentStep);
+    }
+    trackFormStep(currentStep + 1); // +1 car les étapes commencent à 0
+  }, [currentStep, formData, initialFormData]);
 
   useEffect(() => {
+    // Track form start
+    trackFormStart();
+    
     // Restaurer la progression au montage
     const saved = loadQuoteProgress();
     if (saved) {
@@ -60,15 +78,15 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     saveQuoteProgress(formData, currentStep);
   }, [formData, currentStep]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    field: string
-  ) => {
-    onInputChange(field, e.target.value);
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+  const handleInputChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
+      onInputChange(field, e.target.value);
+      if (errors[field]) {
+        setErrors(prev => ({ ...prev, [field]: '' }));
+      }
+    },
+    [onInputChange, errors]
+  );
 
   // Suppression de handleOptionToggle non utilisé
 
@@ -80,7 +98,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
 
   const isValidDateFormat = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
 
-  const validateCurrentStep = (): boolean => {
+  const validateCurrentStep = React.useCallback((): boolean => {
     const newErrors: Record<string, string> = {};
     if (currentStep === 0) {
       if (!isValidDateFormat(formData.dateNaissance)) {
@@ -105,26 +123,47 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [currentStep, formData.dateNaissance, formData.datePermis]);
 
-  const handleNextClick = () => {
+  const handleNextClick = React.useCallback(() => {
     if (!validateCurrentStep()) {
+      trackEvent('Form', 'Abandoned', `Step ${currentStep + 1}`);
       return;
     }
 
     console.log('Next button clicked - current step:', currentStep);
     setIsPulsing(true);
+    
     setTimeout(() => {
       setIsPulsing(false);
+      trackFormStep(currentStep + 1);
+      
+      if (currentStep === 2) {
+        trackFormComplete();
+        Object.entries(formData.optionsDetaillees).forEach(([option, isSelected]) => {
+          if (isSelected) {
+            trackEvent('Options', 'Selected', option);
+          }
+        });
+
+        const selectedInsurer = formData.preferenceCompagnie === 'OUI'
+          ? formData.preferenceCompagnie
+          : 'Aucune préférence';
+        const price = Number(formData.prixVente) || Number(formData.prixNeuf) || 0;
+        trackConversion(selectedInsurer, price);
+        trackQuoteSelected(formData.formule);
+      }
+      
       console.log('Calling parent onNextStep');
+      setCurrentStep(prev => prev + 1);
       onNextStep();
-    }, 400); // Durée de l'animation
-  };
+    }, 400);
+  }, [currentStep, formData, onNextStep, validateCurrentStep]);
   
-    const handleResetForm = () => {
-      clearQuoteProgress();
-      onResetForm();
-    };
+  const handleResetForm = React.useCallback(() => {
+    clearQuoteProgress();
+    onResetForm();
+  }, [onResetForm]);
 
   return (
     <React.Fragment>
@@ -524,7 +563,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                   value={formData.usagePrincipal}
                   onChange={(e) => {
                     handleInputChange(e, 'usagePrincipal');
-                    setFormData({ ...formData, usagePrincipal: e.target.value });
+                    setFormData({ ...formData, usagePrincipal: e.target.value as "personnel" | "professionnel" | "mixte" });
                   }}
                   className="quoteformw-input"
                   required
@@ -542,7 +581,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                   value={formData.kilometrageAnnuel}
                   onChange={(e) => {
                     handleInputChange(e, 'kilometrageAnnuel');
-                    setFormData({ ...formData, kilometrageAnnuel: e.target.value });
+                    setFormData({ ...formData, kilometrageAnnuel: Number(e.target.value) });
                   }}
                   className="quoteformw-input"
                   required
@@ -560,7 +599,7 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                   value={formData.niveauFranchise}
                   onChange={(e) => {
                     handleInputChange(e, 'niveauFranchise');
-                    setFormData({ ...formData, niveauFranchise: e.target.value });
+                    setFormData({ ...formData, niveauFranchise: Number(e.target.value) });
                   }}
                   className="quoteformw-input"
                   required
@@ -700,10 +739,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                           ...formData.optionsDetaillees,
                           assistanceRoute: e.target.checked
                         };
-                        setFormData({
-                          ...formData,
+                        setFormData(prev => ({
+                          ...prev,
                           optionsDetaillees: updated
-                        });
+                        }));
                         onInputChange('optionsDetaillees', updated);
                       }}
                       style={{ width: '16px', height: '16px' }}
@@ -720,10 +759,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                           ...formData.optionsDetaillees,
                           vehiculeRemplacement: e.target.checked
                         };
-                        setFormData({
-                          ...formData,
+                        setFormData(prev => ({
+                          ...prev,
                           optionsDetaillees: updated
-                        });
+                        }));
                         onInputChange('optionsDetaillees', updated);
                       }}
                       style={{ width: '16px', height: '16px' }}
@@ -797,6 +836,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
   </React.Fragment>
 );
 };
-
+const QuoteForm = React.memo(QuoteFormComponent);
 export default QuoteForm;
 
