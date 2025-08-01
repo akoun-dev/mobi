@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import './QuoteForm.css';
+import Tooltip from './Tooltip';
 import { saveQuoteProgress, loadQuoteProgress, clearQuoteProgress } from '../utils/saveQuoteUtils';
 
 import type { FormData as QuoteFormData, OptionsDetaillees } from '../types/types';
@@ -437,7 +438,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 />
               </div>
               <div>
-                <label className="quoteformw-label">Prix estimé de la vente*</label>
+                <label className="quoteformw-label label-with-tooltip">
+                  <span>Prix estimé de la vente*</span>
+                  <Tooltip message="Valeur vénale: estimation du prix actuel du véhicule." />
+                </label>
                 <input
                   type="number"
                   value={formData.prixVente}
@@ -547,7 +551,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
             </div>
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Niveau de franchise souhaité (FCFA)*</label>
+                <label className="quoteformw-label label-with-tooltip">
+                  <span>Niveau de franchise souhaité (FCFA)</span>
+                  <Tooltip message="Part des frais restant à votre charge après un sinistre." />
+                </label>
                 <input
                   type="number"
                   value={formData.niveauFranchise}
@@ -621,7 +628,10 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
             </div>
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Formule d'assurance*</label>
+                <label className="quoteformw-label label-with-tooltip">
+                  <span>Formule d'assurance*</span>
+                  <Tooltip message="Détermine l'étendue de la couverture de votre contrat." />
+                </label>
                 <div className="quoteformw-radio-group">
                   <label><input type="radio" name="formule" value="Tiers Simple" checked={formData.formule === 'Tiers Simple'} onChange={(e) => {
                     handleInputChange(e, 'formule');

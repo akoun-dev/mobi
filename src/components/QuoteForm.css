@@ -302,6 +302,12 @@
   transition: color 0.3s ease;
 }
 
+.label-with-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .quoteformw-input,
 .quoteformw-select {
   width: 100%;
