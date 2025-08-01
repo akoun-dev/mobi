@@ -87,14 +87,14 @@ const Register: React.FC<RegisterProps> = ({ onLogin }) => {
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Mock user data - en production, ceci viendrait de l'API
-      const mockUser = {
+      const mockUser: User = {
         id: Math.floor(Math.random() * 1000) + 1,
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
         phone: formData.phone,
-        role: 'client',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        role: 'client'
       };
 
       onLogin(mockUser);

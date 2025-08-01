@@ -364,6 +364,10 @@ const App: React.FC = () => {
                 onNextStep={nextStep}
                 onPrevStep={prevStep}
                 onResetForm={resetForm}
+                onSubmit={(values) => {
+                  console.log('Quote selected:', values);
+                  setSelectedQuote(mockQuotes.find(q => q.id === parseInt(values.selectedInsurer)) || null);
+                }}
               />
             )}
             {showResults && (

@@ -36,18 +36,45 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
       userEmail: user.email,
       userName: `${user.firstName} ${user.lastName}`,
       formData: {
-        age: '28',
-        licenseYears: '5',
-        accidents: '0',
-        usage: 'personnel',
-        annualKm: '15000',
-        vehicleValue: '8000000',
-        energy: 'essence',
-        registrationDate: '2020-03-15',
-        seats: '5',
-        coverage: 'tous_risques',
+        nom: 'Dupont',
+        prenom: 'Jean',
+        sexe: 'M',
+        dateNaissance: '1985-05-15',
+        email: 'jean.dupont@example.com',
+        telephone: '+2250700000000',
+        profession: 'Cadre',
+        datePermis: '2010-06-20',
+        immatriculation: 'AB123CD',
+        nomCarteGrise: 'Dupont Jean',
+        marque: 'Toyota',
+        genre: 'SUV',
+        categorie: 'M1',
+        puissance: '150',
+        energie: 'essence',
+        prixNeuf: '10000000',
+        prixVente: '8000000',
+        dateMiseCirculation: '2020-03-15',
+        nbPlaces: '5',
+        ville: 'Abidjan',
+        couleur: 'Noir',
+        dateEffet: '2024-01-01',
+        periode: '12',
+        preferenceCompagnie: 'NSIA',
+        formule: 'tous_risques',
+        typeSouscription: 'annuelle',
         options: ['assistance', 'bris_glace'],
-        deductible: '25000'
+        antecedentsSinistres: 'non',
+        nombreSinistres: 0,
+        typeSinistres: [],
+        usagePrincipal: 'personnel',
+        kilometrageAnnuel: 15000,
+        niveauFranchise: 25000,
+        optionsDetaillees: {
+          assistanceRoute: true,
+          vehiculeRemplacement: false,
+          brisGlace: true,
+          protectionJuridique: false
+        }
       },
       quotes: [
         {
@@ -59,7 +86,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
           deductible: 25000,
           options: ['Assistance 24h/24', 'Véhicule de remplacement'],
           rating: 4.5,
-          details: 'Couverture complète avec assistance premium'
+          details: 'Couverture complète avec assistance premium',
+          subscribeUrl: 'https://mobi.ci/souscription/1'
         }
       ],
       selectedQuote: {
@@ -71,7 +99,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         deductible: 25000,
         options: ['Assistance 24h/24', 'Véhicule de remplacement'],
         rating: 4.5,
-        details: 'Couverture complète avec assistance premium'
+        details: 'Couverture complète avec assistance premium',
+        subscribeUrl: 'https://mobi.ci/souscription/1'
       },
       status: 'completed',
       createdAt: '2024-01-15T10:30:00Z',
@@ -83,18 +112,45 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
       userEmail: user.email,
       userName: `${user.firstName} ${user.lastName}`,
       formData: {
-        age: '28',
-        licenseYears: '5',
-        accidents: '0',
-        usage: 'professionnel',
-        annualKm: '25000',
-        vehicleValue: '12000000',
-        energy: 'diesel',
-        registrationDate: '2023-08-20',
-        seats: '7',
-        coverage: 'tiers_etendu',
+        nom: 'Martin',
+        prenom: 'Sophie',
+        sexe: 'F',
+        dateNaissance: '1990-11-22',
+        email: 'sophie.martin@example.com',
+        telephone: '+2250700000001',
+        profession: 'Commerciale',
+        datePermis: '2015-09-10',
+        immatriculation: 'EF456GH',
+        nomCarteGrise: 'Martin Sophie',
+        marque: 'Peugeot',
+        genre: 'Berline',
+        categorie: 'M1',
+        puissance: '120',
+        energie: 'diesel',
+        prixNeuf: '15000000',
+        prixVente: '12000000',
+        dateMiseCirculation: '2023-08-20',
+        nbPlaces: '7',
+        ville: 'Yamoussoukro',
+        couleur: 'Blanc',
+        dateEffet: '2024-01-15',
+        periode: '12',
+        preferenceCompagnie: 'Atlantique',
+        formule: 'tiers_etendu',
+        typeSouscription: 'annuelle',
         options: ['assistance'],
-        deductible: '30000'
+        antecedentsSinistres: 'non',
+        nombreSinistres: 0,
+        typeSinistres: [],
+        usagePrincipal: 'professionnel',
+        kilometrageAnnuel: 25000,
+        niveauFranchise: 30000,
+        optionsDetaillees: {
+          assistanceRoute: true,
+          vehiculeRemplacement: false,
+          brisGlace: false,
+          protectionJuridique: false
+        }
       },
       quotes: [
         {
@@ -106,7 +162,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
           deductible: 30000,
           options: ['Assistance 24h/24'],
           rating: 4.2,
-          details: 'Protection optimale pour votre véhicule'
+          details: 'Protection optimale pour votre véhicule',
+          subscribeUrl: 'https://mobi.ci/souscription/2'
         }
       ],
       status: 'pending',
@@ -337,12 +394,12 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                     <div className="detail-row">
                       <span className="detail-label">Véhicule:</span>
                       <span className="detail-value">
-                        {request.formData.energy} - {request.formData.seats} places
+                        {request.formData.energie} - {request.formData.nbPlaces} places
                       </span>
                     </div>
                     <div className="detail-row">
                       <span className="detail-label">Couverture:</span>
-                      <span className="detail-value">{request.formData.coverage}</span>
+                      <span className="detail-value">{request.formData.formule}</span>
                     </div>
                     {request.selectedQuote && (
                       <div className="selected-quote">
@@ -553,9 +610,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
                 </div>
                 <div className="detail-section">
                   <h4>Véhicule</h4>
-                  <p><strong>Énergie:</strong> {selectedRequest.formData.energy}</p>
-                  <p><strong>Places:</strong> {selectedRequest.formData.seats}</p>
-                  <p><strong>Valeur:</strong> {parseInt(selectedRequest.formData.vehicleValue).toLocaleString()} FCFA</p>
+                  <p><strong>Énergie:</strong> {selectedRequest.formData.energie}</p>
+                  <p><strong>Places:</strong> {selectedRequest.formData.nbPlaces}</p>
+                  <p><strong>Valeur:</strong> {parseInt(selectedRequest.formData.prixVente).toLocaleString()} FCFA</p>
                 </div>
                 <div className="detail-section">
                   <h4>Devis proposés</h4>

@@ -62,11 +62,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Mock user data - en production, ceci viendrait de l'API
-      const mockUser = {
+      const mockUser: User = {
         id: 1,
         email: formData.email,
         firstName: 'John',
         lastName: 'Doe',
+        phone: '+2250102030405',
+        createdAt: new Date().toISOString(),
         role: formData.email.includes('admin') ? 'admin' : 'client'
       };
 
