@@ -3,7 +3,6 @@ import { X } from 'lucide-react';
 import type { FormData as QuoteFormData, OptionsDetaillees } from '../types/types';
 
 import './QuoteForm.css';
-import Tooltip from './Tooltip';
 import { saveQuoteProgress, loadQuoteProgress, clearQuoteProgress } from '../utils/saveQuoteUtils';
 import {
   trackFormStart,
@@ -16,6 +15,18 @@ import {
 
 
 
+/**
+ * Props du composant QuoteForm
+ * @typedef {Object} QuoteFormProps
+ * @property {number} initialStep - Étape initiale du formulaire (0-2)
+ * @property {QuoteFormData} formData - Données initiales du formulaire
+ * @property {function} onInputChange - Callback appelé quand un champ change
+ * @property {function} onOptionToggle - Callback appelé quand une option est toggle
+ * @property {function} onNextStep - Callback appelé pour passer à l'étape suivante
+ * @property {function} onPrevStep - Callback appelé pour revenir à l'étape précédente
+ * @property {function} onResetForm - Callback appelé pour réinitialiser le formulaire
+ * @property {function} onSubmit - Callback appelé pour soumettre le formulaire
+ */
 interface QuoteFormProps {
   initialStep: number;
   formData: QuoteFormData;
@@ -27,6 +38,12 @@ interface QuoteFormProps {
   onSubmit: (values: { selectedInsurer: string; selectedPrice: number }) => void;
 }
 
+/**
+ * Composant de formulaire multi-étapes pour obtenir un devis d'assurance auto
+ * @component
+ * @param {QuoteFormProps} props - Les props du composant
+ * @returns {JSX.Element} Le formulaire de devis
+ */
 const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
   const {
     initialStep,
@@ -38,6 +55,10 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
   } = props;
   
   const [currentStep, setCurrentStep] = useState(initialStep);
+
+  useEffect(() => {
+    setCurrentStep(initialStep);
+  }, [initialStep]);
   const [formData, setFormData] = useState<QuoteFormData>({
     ...initialFormData,
     energie: initialFormData.energie || 'Essence',
@@ -56,9 +77,10 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
     if (process.env.NODE_ENV === 'development') {
       console.log('Initial form data received:', initialFormData);
       console.log('Current form state:', formData);
-      console.log('Current step:', currentStep);
-    }
-    trackFormStep(currentStep + 1); // +1 car les étapes commencent à 0
+      console.log('Current step:', currentStep, 'Initial step:', initialStep);
+      }
+      console.log('Tracking step:', currentStep + 1);
+      trackFormStep(currentStep + 1); // +1 car les étapes commencent à 0
   }, [currentStep, formData, initialFormData]);
 
   useEffect(() => {
@@ -80,12 +102,14 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
 
   const handleInputChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: string) => {
-      onInputChange(field, e.target.value);
+      const value = e.target.value;
+      onInputChange(field, value);
+      setFormData(prev => ({ ...prev, [field]: value }));
       if (errors[field]) {
         setErrors(prev => ({ ...prev, [field]: '' }));
       }
     },
-    [onInputChange, errors]
+    [onInputChange, errors, setFormData]
   );
 
   // Suppression de handleOptionToggle non utilisé
@@ -154,8 +178,9 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
         trackQuoteSelected(formData.formule);
       }
       
-      console.log('Calling parent onNextStep');
-      setCurrentStep(prev => prev + 1);
+      console.log('Before onNextStep - currentStep:', currentStep);
+      onNextStep();
+      console.log('After onNextStep - currentStep should update via props');
       onNextStep();
     }, 400);
   }, [currentStep, formData, onNextStep, validateCurrentStep]);
@@ -477,10 +502,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                 />
               </div>
               <div>
-                <label className="quoteformw-label label-with-tooltip">
-                  <span>Prix estimé de la vente*</span>
-                  <Tooltip message="Valeur vénale: estimation du prix actuel du véhicule." />
-                </label>
+                <label className="quoteformw-label">Prix estimé de la vente*</label>
                 <input
                   type="number"
                   value={formData.prixVente}
@@ -590,10 +612,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
             </div>
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label label-with-tooltip">
-                  <span>Niveau de franchise souhaité (FCFA)</span>
-                  <Tooltip message="Part des frais restant à votre charge après un sinistre." />
-                </label>
+                <label className="quoteformw-label">Niveau de franchise souhaité (FCFA)*</label>
                 <input
                   type="number"
                   value={formData.niveauFranchise}
@@ -667,10 +686,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
             </div>
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label label-with-tooltip">
-                  <span>Formule d'assurance*</span>
-                  <Tooltip message="Détermine l'étendue de la couverture de votre contrat." />
-                </label>
+                <label className="quoteformw-label">Formule d'assurance*</label>
                 <div className="quoteformw-radio-group">
                   <label><input type="radio" name="formule" value="Tiers Simple" checked={formData.formule === 'Tiers Simple'} onChange={(e) => {
                     handleInputChange(e, 'formule');
@@ -735,15 +751,15 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                       name="assistanceRoute"
                       checked={formData.optionsDetaillees?.assistanceRoute || false}
                       onChange={(e) => {
-                        const updated = {
-                          ...formData.optionsDetaillees,
-                          assistanceRoute: e.target.checked
-                        };
-                        setFormData(prev => ({
-                          ...prev,
-                          optionsDetaillees: updated
-                        }));
-                        onInputChange('optionsDetaillees', updated);
+                        const checked = e.target.checked;
+                        setFormData(prev => {
+                          const updated = {
+                            ...prev.optionsDetaillees,
+                            assistanceRoute: checked
+                          };
+                          onInputChange('optionsDetaillees', updated);
+                          return { ...prev, optionsDetaillees: updated };
+                        });
                       }}
                       style={{ width: '16px', height: '16px' }}
                     />
@@ -837,5 +853,8 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
 );
 };
 const QuoteForm = React.memo(QuoteFormComponent);
+
+QuoteForm.displayName = 'QuoteForm';
+
 export default QuoteForm;
 
