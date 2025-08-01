@@ -11,7 +11,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onCompareClick }) => {
     <section className="hero-section">
       <div className="hero-container">
         <h1 className="hero-title">
-          Trouvez la meilleure assurance auto
+          Trouvez la meilleure assurance auto 
           <span className="hero-title-highlight"> en 3 minutes</span>
         </h1>
         <p className="hero-description">
