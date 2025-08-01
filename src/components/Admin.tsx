@@ -447,46 +447,56 @@ const Admin: React.FC<AdminProps> = ({ user, onLogout }) => {
         </div>
       </div>
 
-      <div className="admin-tabs">
-        <button
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Vue d'ensemble
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'requests' ? 'active' : ''}`}
-          onClick={() => setActiveTab('requests')}
-        >
-          Demandes de devis
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          Utilisateurs
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'insurers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('insurers')}
-        >
-          Assureurs
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'imports' ? 'active' : ''}`}
-          onClick={() => setActiveTab('imports')}
-        >
-          Imports
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          Paramètres
-        </button>
-      </div>
+      <div className="admin-layout">
+        <aside className="admin-sidebar">
+          <button
+            className={`sidebar-btn ${
+              activeTab === 'overview' ? 'active' : ''
+            }`}
+            onClick={() => setActiveTab('overview')}
+          >
+            Vue d'ensemble
+          </button>
+          <button
+            className={`sidebar-btn ${
+              activeTab === 'requests' ? 'active' : ''
+            }`}
+            onClick={() => setActiveTab('requests')}
+          >
+            Demandes de devis
+          </button>
+          <button
+            className={`sidebar-btn ${activeTab === 'users' ? 'active' : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            Utilisateurs
+          </button>
+          <button
+            className={`sidebar-btn ${
+              activeTab === 'insurers' ? 'active' : ''
+            }`}
+            onClick={() => setActiveTab('insurers')}
+          >
+            Assureurs
+          </button>
+          <button
+            className={`sidebar-btn ${activeTab === 'imports' ? 'active' : ''}`}
+            onClick={() => setActiveTab('imports')}
+          >
+            Imports
+          </button>
+          <button
+            className={`sidebar-btn ${
+              activeTab === 'settings' ? 'active' : ''
+            }`}
+            onClick={() => setActiveTab('settings')}
+          >
+            Paramètres
+          </button>
+        </aside>
 
-      <div className="admin-content">
+        <main className="admin-main">
+          <div className="admin-content">
         {activeTab === 'overview' && stats && (
           <div className="overview-tab">
             <div className="stats-overview">
@@ -812,6 +822,8 @@ const Admin: React.FC<AdminProps> = ({ user, onLogout }) => {
             </div>
           </div>
         )}
+      </div>
+        </main>
       </div>
 
       {/* Modal pour voir les détails d'une demande */}
