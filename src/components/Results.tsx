@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { X } from 'lucide-react';
 import './Results.css';
+import QuoteDownloadModal from './QuoteDownloadModal';
 
 interface Quote {
   id: number;
@@ -27,8 +28,9 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
   const [sortKey, setSortKey] = useState<SortKey>('priceAsc');
   const [expanded, setExpanded] = useState<number | null>(null);
   const [contactMsg, setContactMsg] = useState<string>('');
-  const [pendingEmailFor, setPendingEmailFor] = useState<number | null>(null);
-  const [email, setEmail] = useState('');
+ 
+  // Modal pour "Recevoir le devis"
+  const [modalQuote, setModalQuote] = useState<Quote | null>(null);
  
   // Etats des filtres Options
   const [fBris, setFBris] = useState<boolean>(false);
@@ -111,27 +113,10 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
   }
 
   const handleReceive = (q: Quote) => {
-    // Si email non fourni -> demander
-    const hasEmail = false; // maquette: considéré manquant
-    if (!hasEmail) {
-      setPendingEmailFor(q.id);
-      setContactMsg('');
-      return;
-    }
-    setContactMsg('Vous serez contacté sous 48h');
-    onDownloadQuote(q);
+    // Ouvre le popup d’options: Email / WhatsApp / Télécharger
+    setModalQuote(q);
   };
 
-  const confirmEmail = (q: Quote) => {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert('Email invalide');
-      return;
-    }
-    setPendingEmailFor(null);
-    setEmail('');
-    setContactMsg('Vous serez contacté sous 48h');
-    onDownloadQuote(q);
-  };
 
   const handleCallMe = () => {
     setContactMsg('Vous serez recontacté dans un délai max de 48h');
@@ -267,22 +252,6 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
                 </div>
               </div>
 
-              {pendingEmailFor === q.id && (
-                <div className="offer-inline-form">
-                  <label>Votre email pour recevoir le devis</label>
-                  <div className="inline-row">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      placeholder="exemple@email.com"
-                    />
-                    <button className="btn btn-accent" onClick={() => confirmEmail(q)}>Confirmer</button>
-                  </div>
-                  <div className="hint">Vous serez contacté sous 48h. L’option “Souscrire en ligne” est masquée dans cette maquette.</div>
-                </div>
-              )}
-
               {isOpen && (
                 <div className="offer-details-panel">
                   <div className="details-left">
@@ -367,6 +336,26 @@ const Results: React.FC<ResultsProps> = ({ quotes, onResetForm, onDownloadQuote 
             </div>
           </div>
         </div>
+      )}
+      {/* Popup: options Email / WhatsApp / Télécharger */}
+      {modalQuote && (
+        <QuoteDownloadModal
+          quote={modalQuote}
+          onClose={() => setModalQuote(null)}
+          onDownload={(quote) => {
+            onDownloadQuote(quote);
+            setContactMsg('Votre devis a été téléchargé.');
+          }}
+          onSendEmail={() => {
+            setContactMsg('Le devis sera envoyé par email.');
+          }}
+          onSendWhatsApp={() => {
+            setContactMsg('Le devis sera envoyé par WhatsApp.');
+          }}
+          onSubscribe={(url) => {
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }}
+        />
       )}
     </div>
   );

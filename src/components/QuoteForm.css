@@ -277,6 +277,40 @@
   }
 }
 
+/* Variante inline: utile pour aligner un champ principal et un petit contrôleur (ex: WhatsApp) */
+.quoteformw-grid-inline {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 600px) {
+  .quoteformw-grid-inline {
+    grid-template-columns: 2fr 1fr;
+    align-items: end;
+  }
+}
+
+/* Champ compact pour héberger une case à cocher alignée avec un input */
+.quoteformw-field-compact {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.quoteformw-checkbox-label.compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  min-height: 48px;
+  background: #fff;
+  box-shadow: 0 2px 8px 0 #22314A0A;
+}
+.quoteformw-checkbox-label.compact:hover {
+  background: var(--color-blue-bg);
+  color: var(--color-blue-main);
+  transform: translateY(-1px);
+}
+
 .quoteformw-grid > div {
   display: flex;
   flex-direction: column;

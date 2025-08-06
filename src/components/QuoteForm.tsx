@@ -59,10 +59,17 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
   useEffect(() => {
     setCurrentStep(initialStep);
   }, [initialStep]);
-  const [formData, setFormData] = useState<QuoteFormData>({
+
+  // Étend localement le type pour gérer l'option WhatsApp sans impacter le type global
+  type LocalFormData = QuoteFormData & { telephoneWhatsapp?: boolean };
+
+  const [formData, setFormData] = useState<LocalFormData>({
     ...initialFormData,
     energie: initialFormData.energie || 'Essence',
     formule: initialFormData.formule || 'Tiers Simple',
+    telephoneWhatsapp: (('telephoneWhatsapp' in (initialFormData as object))
+      ? (initialFormData as LocalFormData).telephoneWhatsapp
+      : false) ?? false,
     optionsDetaillees: initialFormData.optionsDetaillees || {
       assistanceRoute: false,
       vehiculeRemplacement: false,
@@ -126,9 +133,9 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
   // const isValidDateFormat = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value); // masqué: non utilisé avec les champs cachés
 
   const validateEmail = (email: string): boolean => {
-    if (!email) return true; // facultatif à l'étape 0
-    // Regex email simple
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!email) return false; // désormais requis
+    // Regex email plus stricte (RFC simplifiée)
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
   };
 
   const validatePhone = (phone: string): boolean => {
@@ -140,9 +147,16 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
   const validateCurrentStep = React.useCallback((): boolean => {
     const newErrors: Record<string, string> = {};
     if (currentStep === 0) {
-      // Email facultatif mais contrôle si présent
-      if (formData.email && !validateEmail(formData.email)) {
-        newErrors.email = 'Email invalide';
+      // Nom & Prénom obligatoires
+      if (!formData.nom || formData.nom.trim().length === 0) {
+        newErrors.nom = 'Le nom est obligatoire';
+      }
+      if (!formData.prenom || formData.prenom.trim().length === 0) {
+        newErrors.prenom = 'Le prénom est obligatoire';
+      }
+      // Email obligatoire + contrôle
+      if (!formData.email || !validateEmail(formData.email)) {
+        newErrors.email = !formData.email ? 'L’email est obligatoire' : 'Email invalide';
       }
       // Téléphone obligatoire + contrôle
       if (!formData.telephone) {
@@ -154,7 +168,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [currentStep, formData.email, formData.telephone]);
+  }, [currentStep, formData.nom, formData.prenom, formData.email, formData.telephone]);
 
   const handleNextClick = React.useCallback(() => {
     if (!validateCurrentStep()) {
@@ -246,10 +260,15 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     handleInputChange(e, 'nom');
                     setFormData({ ...formData, nom: e.target.value });
                   }}
-                  className="quoteformw-input"
+                  className={`quoteformw-input${errors.nom ? ' error' : ''}`}
                   placeholder="Nom"
                   required
+                  aria-invalid={!!errors.nom}
+                  aria-describedby={errors.nom ? 'error-nom' : undefined}
                 />
+                {errors.nom && (
+                  <span id="error-nom" className="error-message">{errors.nom}</span>
+                )}
               </div>
               <div>
                 <label className="quoteformw-label">Prénom*</label>
@@ -260,16 +279,22 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     handleInputChange(e, 'prenom');
                     setFormData({ ...formData, prenom: e.target.value });
                   }}
-                  className="quoteformw-input"
+                  className={`quoteformw-input${errors.prenom ? ' error' : ''}`}
                   placeholder="Prénom"
                   required
+                  aria-invalid={!!errors.prenom}
+                  aria-describedby={errors.prenom ? 'error-prenom' : undefined}
                 />
+                {errors.prenom && (
+                  <span id="error-prenom" className="error-message">{errors.prenom}</span>
+                )}
               </div>
             </div>
 
+            {/* Disposition améliorée: email sur une ligne entière, puis téléphone + WhatsApp alignés */}
             <div className="quoteformw-grid">
-              <div>
-                <label className="quoteformw-label">Adresse email de l'assuré <span className="label-optional">(facultatif)</span></label>
+              <div style={{ gridColumn: '1 / -1' }}>
+                <label className="quoteformw-label">Adresse email de l'assuré*</label>
                 <input
                   type="email"
                   value={formData.email}
@@ -279,11 +304,17 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                   }}
                   className={`quoteformw-input${errors.email ? ' error' : ''}`}
                   placeholder="exemple@email.com"
+                  required
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'error-email' : undefined}
                 />
                 {errors.email && (
-                  <span className="error-message">{errors.email}</span>
+                  <span id="error-email" className="error-message">{errors.email}</span>
                 )}
               </div>
+            </div>
+
+            <div className="quoteformw-grid quoteformw-grid-inline">
               <div>
                 <label className="quoteformw-label">Numéro de téléphone* <span className="label-required">(obligatoire)</span></label>
                 <input
@@ -296,10 +327,28 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                   className={`quoteformw-input${errors.telephone ? ' error' : ''}`}
                   placeholder="07 00 00 00 00"
                   required
+                  aria-invalid={!!errors.telephone}
+                  aria-describedby={errors.telephone ? 'error-telephone' : undefined}
                 />
                 {errors.telephone && (
-                  <span className="error-message">{errors.telephone}</span>
+                  <span id="error-telephone" className="error-message">{errors.telephone}</span>
                 )}
+              </div>
+              <div className="quoteformw-field-compact">
+                <label className="quoteformw-label" style={{ visibility: 'hidden' }}>WhatsApp</label>
+                <label className="quoteformw-checkbox-label compact" aria-live="polite">
+                  <input
+                    type="checkbox"
+                    checked={!!formData.telephoneWhatsapp}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setFormData((prev) => ({ ...prev, telephoneWhatsapp: checked }));
+                      onInputChange('telephoneWhatsapp', String(checked));
+                    }}
+                    aria-label="Ce numéro est WhatsApp"
+                  />
+                  Numéro WhatsApp
+                </label>
               </div>
             </div>
 
@@ -393,30 +442,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
               </div>
             </div>
 
-            {/* Bannière d’informations clés */}
-            <div className="quoteformw-banner">
-              <div className="banner-item">
-                <span className="banner-emoji" aria-hidden>🔒</span>
-                <div>
-                  <div className="banner-title">Vos données personnelles sont précieuses</div>
-                  <div className="banner-text">Rassurez-vous, nous ne les transmettrons jamais sans votre accord.</div>
-                </div>
-              </div>
-              <div className="banner-item">
-                <span className="banner-emoji" aria-hidden>🔭</span>
-                <div>
-                  <div className="banner-title">Une comparaison 100% gratuite</div>
-                  <div className="banner-text">Bonne nouvelle : zéro frais caché, zéro commission !</div>
-                </div>
-              </div>
-              <div className="banner-item">
-                <span className="banner-emoji" aria-hidden>📄</span>
-                <div>
-                  <div className="banner-title">Des offres sur‑mesure</div>
-                  <div className="banner-text">Nous vous proposons les offres les plus adaptées à votre profil.</div>
-                </div>
-              </div>
-            </div>
+            {/* Bannière d’informations clés déplacée sous les boutons au Step 1 */}
           </div>
         )}
         {/* Step 2: Véhicule */}
@@ -688,6 +714,33 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
             {currentStep === 2 ? 'Comparer les offres' : 'Suivant'}
           </button>
         </div>
+
+        {/* Afficher la bannière juste en bas des boutons, uniquement à l'étape 1 */}
+        {currentStep === 0 && (
+          <div className="quoteformw-banner" style={{ marginTop: 12 }}>
+            <div className="banner-item">
+              <span className="banner-emoji" aria-hidden>🔒</span>
+              <div>
+                <div className="banner-title">Vos données personnelles sont précieuses</div>
+                <div className="banner-text">Rassurez-vous, nous ne les transmettrons jamais sans votre accord.</div>
+              </div>
+            </div>
+            <div className="banner-item">
+              <span className="banner-emoji" aria-hidden>🔭</span>
+              <div>
+                <div className="banner-title">Une comparaison 100% gratuite</div>
+                <div className="banner-text">Bonne nouvelle : zéro frais caché, zéro commission !</div>
+              </div>
+            </div>
+            <div className="banner-item">
+              <span className="banner-emoji" aria-hidden>📄</span>
+              <div>
+                <div className="banner-title">Des offres sur‑mesure</div>
+                <div className="banner-text">Nous vous proposons les offres les plus adaptées à votre profil.</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   </React.Fragment>
