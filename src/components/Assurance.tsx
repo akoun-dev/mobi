@@ -26,24 +26,51 @@ const Assurance = () => (
     <div className="assurance-container">
       <div className="assurance-types">
         {assurances.map(a => (
-          <div className="assurance-type-card" key={a.title}>
-            <div className="assurance-type-icon">{a.icon}</div>
-            <div className="assurance-type-title">{a.title}</div>
+          <Link
+            to="/"
+            key={a.title}
+            className="assurance-type-card assurance-type-link"
+            role="button"
+            aria-label={`Comparer assurance ${a.title}`}
+          >
+            <div className="assurance-type-head">
+              <div className="assurance-type-icon">{a.icon}</div>
+              <div className="assurance-type-title">{a.title}</div>
+              <span className="assurance-type-arrow" aria-hidden>›</span>
+            </div>
             <div className="assurance-type-desc">{a.desc}</div>
-          </div>
+          </Link>
         ))}
       </div>
-      <div className="assurance-advantages">
-        <h2 className="assurance-advantages-title">Pourquoi choisir NOLI ?</h2>
-        <ul className="assurance-advantages-list">
+      {/* Bloc avantages + CTA amélioré */}
+      <section className="assurance-advantages">
+        <div className="assurance-advantages-header">
+          <div className="assurance-advantages-badge">Pourquoi NOLI</div>
+          <h2 className="assurance-advantages-title">Des raisons concrètes de nous faire confiance</h2>
+          <p className="assurance-advantages-sub">
+            Des partenaires fiables, des conseils utiles et des devis gratuits. Vous comparez, vous décidez.
+          </p>
+        </div>
+
+        <div className="assurance-advantages-grid">
           {avantages.map((a, i) => (
-            <li key={i} className="assurance-advantage-item">{a.icon}<span>{a.text}</span></li>
+            <div key={i} className="assurance-advantage-card">
+              <div className="adv-icon">{a.icon}</div>
+              <div className="adv-text">{a.text}</div>
+            </div>
           ))}
-        </ul>
-      </div>
-      <div className="assurance-cta">
-        <Link to="/" className="assurance-cta-btn">Commencer la comparaison</Link>
-      </div>
+        </div>
+
+        <div className="assurance-cta enhanced">
+          <Link to="/" className="assurance-cta-btn">
+            Commencer la comparaison
+            <span className="assurance-cta-kbd" aria-hidden>⏎</span>
+          </Link>
+          <div className="assurance-cta-hint">
+            Gratuit et sans engagement • Résultats en moins d’une minute
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 );
