@@ -117,37 +117,44 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
   // Nombre total d'étapes (0: Profil, 1: Véhicule, 2: Assurance)
   const totalSteps = 3;
 
+  // Libellés d'étapes pour l'indicateur
+  const stepLabels = ['INFO ASSURÉ', 'INFO VEHICULE', 'OPTIONS'];
+
   const [isPulsing, setIsPulsing] = useState(false);
   const nextBtnRef = useRef<HTMLButtonElement>(null);
 
-  const isValidDateFormat = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
+  // const isValidDateFormat = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value); // masqué: non utilisé avec les champs cachés
+
+  const validateEmail = (email: string): boolean => {
+    if (!email) return true; // facultatif à l'étape 0
+    // Regex email simple
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone: string): boolean => {
+    // Format CI courant, accepte espaces: 07 00 00 00 00 ou 0700000000
+    const digits = phone.replace(/\s+/g, '');
+    return /^(01|05|07)\d{8}$/.test(digits);
+  };
 
   const validateCurrentStep = React.useCallback((): boolean => {
     const newErrors: Record<string, string> = {};
     if (currentStep === 0) {
-      if (!isValidDateFormat(formData.dateNaissance)) {
-        newErrors.dateNaissance = 'Format invalide';
+      // Email facultatif mais contrôle si présent
+      if (formData.email && !validateEmail(formData.email)) {
+        newErrors.email = 'Email invalide';
       }
-      if (!isValidDateFormat(formData.datePermis)) {
-        newErrors.datePermis = 'Format invalide';
+      // Téléphone obligatoire + contrôle
+      if (!formData.telephone) {
+        newErrors.telephone = 'Le numéro est obligatoire';
+      } else if (!validatePhone(formData.telephone)) {
+        newErrors.telephone = 'Numéro invalide (ex: 0700000000)';
       }
-      if (
-        isValidDateFormat(formData.dateNaissance) &&
-        isValidDateFormat(formData.datePermis)
-      ) {
-        const birth = new Date(formData.dateNaissance);
-        const license = new Date(formData.datePermis);
-        const minLicenseDate = new Date(birth);
-        minLicenseDate.setFullYear(minLicenseDate.getFullYear() + 18);
-        if (license < minLicenseDate) {
-          newErrors.datePermis =
-            "La date du permis doit être après l'âge légal (18 ans)";
-        }
-      }
+      // Les autres contrôles (date naissance, permis...) sont masqués à cette étape selon consigne
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [currentStep, formData.dateNaissance, formData.datePermis]);
+  }, [currentStep, formData.email, formData.telephone]);
 
   const handleNextClick = React.useCallback(() => {
     if (!validateCurrentStep()) {
@@ -181,7 +188,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
       console.log('Before onNextStep - currentStep:', currentStep);
       onNextStep();
       console.log('After onNextStep - currentStep should update via props');
-      onNextStep();
+      // onNextStep(); // suppression du double appel pour éviter de sauter une étape
     }, 400);
   }, [currentStep, formData, onNextStep, validateCurrentStep]);
   
@@ -204,12 +211,15 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
             <X size={24} />
           </button>
         </div>
-        {/* Progress Bar */}
+        {/* Progress Bar + Step Labels */}
         <div className="quoteformw-progress">
+          {/* Remplacer “Étape X sur Y” par le libellé courant */}
           <div className="quoteformw-progress-labels">
-            <span>Étape {Math.min(currentStep + 1, totalSteps)} sur {totalSteps}</span>
+            <span className="current-step-label">{stepLabels[currentStep] || ''}</span>
             <span>{Math.min(Math.round(((currentStep + 1) / totalSteps) * 100), 100)}% complété</span>
           </div>
+
+
           <div className="quoteformw-progress-bar">
             <div
               className="quoteformw-progress-bar-inner"
@@ -224,6 +234,8 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
             <div className="quoteformw-info-box">
               Ces informations nous permettront de vous identifier et éditer votre police d'assurance.
             </div>
+
+            {/* Champs visibles autorisés */}
             <div className="quoteformw-grid">
               <div>
                 <label className="quoteformw-label">Nom*</label>
@@ -232,7 +244,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                   value={formData.nom}
                   onChange={(e) => {
                     handleInputChange(e, 'nom');
-                    setFormData({...formData, nom: e.target.value});
+                    setFormData({ ...formData, nom: e.target.value });
                   }}
                   className="quoteformw-input"
                   placeholder="Nom"
@@ -246,7 +258,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                   value={formData.prenom}
                   onChange={(e) => {
                     handleInputChange(e, 'prenom');
-                    setFormData({...formData, prenom: e.target.value});
+                    setFormData({ ...formData, prenom: e.target.value });
                   }}
                   className="quoteformw-input"
                   placeholder="Prénom"
@@ -254,7 +266,45 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                 />
               </div>
             </div>
+
             <div className="quoteformw-grid">
+              <div>
+                <label className="quoteformw-label">Adresse email de l'assuré <span className="label-optional">(facultatif)</span></label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => {
+                    handleInputChange(e, 'email');
+                    setFormData({ ...formData, email: e.target.value });
+                  }}
+                  className={`quoteformw-input${errors.email ? ' error' : ''}`}
+                  placeholder="exemple@email.com"
+                />
+                {errors.email && (
+                  <span className="error-message">{errors.email}</span>
+                )}
+              </div>
+              <div>
+                <label className="quoteformw-label">Numéro de téléphone* <span className="label-required">(obligatoire)</span></label>
+                <input
+                  type="tel"
+                  value={formData.telephone}
+                  onChange={(e) => {
+                    handleInputChange(e, 'telephone');
+                    setFormData({ ...formData, telephone: e.target.value });
+                  }}
+                  className={`quoteformw-input${errors.telephone ? ' error' : ''}`}
+                  placeholder="07 00 00 00 00"
+                  required
+                />
+                {errors.telephone && (
+                  <span className="error-message">{errors.telephone}</span>
+                )}
+              </div>
+            </div>
+
+            {/* Champs masqués paramétrablement (conservés dans le DOM pour évolutivité) */}
+            <div className="quoteformw-grid quoteformw-hidden">
               <div>
                 <label className="quoteformw-label">Sexe*</label>
                 <select
@@ -264,7 +314,6 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     setFormData({ ...formData, sexe: e.target.value });
                   }}
                   className="quoteformw-input"
-                  required
                 >
                   <option value="">Sélectionner</option>
                   <option value="Homme">Homme</option>
@@ -281,44 +330,14 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     setFormData({ ...formData, dateNaissance: e.target.value });
                   }}
                   className={`quoteformw-input${errors.dateNaissance ? ' error' : ''}`}
-                  required
                 />
                 {errors.dateNaissance && (
                   <span className="error-message">{errors.dateNaissance}</span>
                 )}
               </div>
             </div>
-            <div className="quoteformw-grid">
-              <div>
-                <label className="quoteformw-label">Adresse email de l'assuré</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => {
-                    handleInputChange(e, 'email');
-                    setFormData({ ...formData, email: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  placeholder="exemple@email.com"
-                  required
-                />
-              </div>
-              <div>
-                <label className="quoteformw-label">Numéro de téléphone*</label>
-                <input
-                  type="tel"
-                  value={formData.telephone}
-                  onChange={(e) => {
-                    handleInputChange(e, 'telephone');
-                    setFormData({ ...formData, telephone: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  placeholder="07 00 00 00 00"
-                  required
-                />
-              </div>
-            </div>
-            <div className="quoteformw-grid">
+
+            <div className="quoteformw-grid quoteformw-hidden">
               <div>
                 <label className="quoteformw-label">Profession / Catégorie socio professionnelle*</label>
                 <select
@@ -328,7 +347,6 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     setFormData({ ...formData, profession: e.target.value });
                   }}
                   className="quoteformw-input"
-                  required
                 >
                   <option value="">Sélectionner</option>
                   <option value="Salarié">Salarié</option>
@@ -348,14 +366,14 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     setFormData({ ...formData, datePermis: e.target.value });
                   }}
                   className={`quoteformw-input${errors.datePermis ? ' error' : ''}`}
-                  required
                 />
                 {errors.datePermis && (
                   <span className="error-message">{errors.datePermis}</span>
                 )}
               </div>
             </div>
-            <div className="quoteformw-grid">
+
+            <div className="quoteformw-grid quoteformw-hidden">
               <div>
                 <label className="quoteformw-label">Antécédents de sinistres (3 dernières années)*</label>
                 <select
@@ -365,7 +383,6 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                     setFormData({ ...formData, antecedentsSinistres: e.target.value });
                   }}
                   className="quoteformw-input"
-                  required
                 >
                   <option value="">Sélectionner</option>
                   <option value="0">0 sinistre</option>
@@ -375,94 +392,66 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                 </select>
               </div>
             </div>
+
+            {/* Bannière d’informations clés */}
+            <div className="quoteformw-banner">
+              <div className="banner-item">
+                <span className="banner-emoji" aria-hidden>🔒</span>
+                <div>
+                  <div className="banner-title">Vos données personnelles sont précieuses</div>
+                  <div className="banner-text">Rassurez-vous, nous ne les transmettrons jamais sans votre accord.</div>
+                </div>
+              </div>
+              <div className="banner-item">
+                <span className="banner-emoji" aria-hidden>🔭</span>
+                <div>
+                  <div className="banner-title">Une comparaison 100% gratuite</div>
+                  <div className="banner-text">Bonne nouvelle : zéro frais caché, zéro commission !</div>
+                </div>
+              </div>
+              <div className="banner-item">
+                <span className="banner-emoji" aria-hidden>📄</span>
+                <div>
+                  <div className="banner-title">Des offres sur‑mesure</div>
+                  <div className="banner-text">Nous vous proposons les offres les plus adaptées à votre profil.</div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
         {/* Step 2: Véhicule */}
         {currentStep === 1 && (
           <div className="quoteformw-step">
-            <h3 className="quoteformw-step-title">Votre véhicule</h3>
+            <h3 className="quoteformw-step-title">Info Véhicule</h3>
             <div className="quoteformw-info-box">
-              Les informations concernant votre véhicule sont marquées sur votre <b>Carte grise</b>. Veuillez vous en servir pour pouvoir renseigner ces champs.
+              Renseignez uniquement les champs nécessaires. Les autres peuvent être masqués selon vos besoins.
             </div>
-            <div className="quoteformw-grid">
-              <div style={{ gridColumn: '1 / span 2' }}>
-                <label className="quoteformw-label">Numéro d'immatriculation*</label>
-                <input
-                  type="text"
-                  value={formData.immatriculation}
-                  onChange={(e) => {
-                    handleInputChange(e, 'immatriculation');
-                    setFormData({ ...formData, immatriculation: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  placeholder="Ex: 1234AB01"
-                  required
-                />
-              </div>
-            </div>
+
+            {/* Énergie */}
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Nom sur la carte grise*</label>
-                <input
-                  type="text"
-                  value={formData.nomCarteGrise}
+                <label className="quoteformw-label">Énergie*</label>
+                <select
+                  value={formData.energie}
                   onChange={(e) => {
-                    handleInputChange(e, 'nomCarteGrise');
-                    setFormData({ ...formData, nomCarteGrise: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  placeholder="Entrez le nom figurant sur la carte grise"
-                  required
-                />
-              </div>
-              <div>
-                <label className="quoteformw-label">Marque*</label>
-                <input
-                  type="text"
-                  value={formData.marque}
-                  onChange={(e) => {
-                    handleInputChange(e, 'marque');
-                    setFormData({ ...formData, marque: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  placeholder="Sélectionner la marque de votre véhicule"
-                  required
-                />
-              </div>
-            </div>
-            <div className="quoteformw-grid">
-              <div>
-                <label className="quoteformw-label">Genre du véhicule*</label>
-                <input
-                  type="text"
-                  value={formData.genre}
-                  onChange={(e) => {
-                    handleInputChange(e, 'genre');
-                    setFormData({ ...formData, genre: e.target.value });
+                    handleInputChange(e, 'energie');
+                    setFormData({ ...formData, energie: e.target.value });
+                    // Réinitialiser la puissance si le type change
+                    setFormData(prev => ({ ...prev, puissance: '' }));
                   }}
                   className="quoteformw-input"
                   required
-                />
+                >
+                  <option value="">Sélectionner</option>
+                  <option value="Essence">Essence</option>
+                  <option value="Diesel">Diesel</option>
+                </select>
               </div>
-              <div>
-                <label className="quoteformw-label">Catégorie/Usage du véhicule*</label>
-                <input
-                  type="text"
-                  value={formData.categorie}
-                  onChange={(e) => {
-                    handleInputChange(e, 'categorie');
-                    setFormData({ ...formData, categorie: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  required
-                />
-              </div>
-            </div>
-            <div className="quoteformw-grid">
+
+              {/* Puissance fiscale: selon énergie */}
               <div>
                 <label className="quoteformw-label">Puissance fiscale*</label>
-                <input
-                  type="text"
+                <select
                   value={formData.puissance}
                   onChange={(e) => {
                     handleInputChange(e, 'puissance');
@@ -470,55 +459,42 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                   }}
                   className="quoteformw-input"
                   required
-                />
-              </div>
-              <div>
-                <label className="quoteformw-label">Énergie*</label>
-                <div className="quoteformw-radio-group">
-                  <label><input type="radio" name="energie" value="Essence" checked={formData.energie === 'Essence'} onChange={(e) => {
-                    handleInputChange(e, 'energie');
-                    setFormData({...formData, energie: e.target.value});
-                  }} required /> Essence</label>
-                  <label><input type="radio" name="energie" value="Diesel" checked={formData.energie === 'Diesel'} onChange={(e) => {
-                    handleInputChange(e, 'energie');
-                    setFormData({...formData, energie: e.target.value});
-                  }} required /> Diesel</label>
-                </div>
+                >
+                  <option value="">Sélectionner</option>
+                  {formData.energie === 'Diesel'
+                    ? Array.from({ length: 9 }, (_, i) => i + 1).map(n => (
+                        <option key={n} value={n.toString()}>{n}{n === 9 ? '+' : ''}</option>
+                      ))
+                    : Array.from({ length: 12 }, (_, i) => i + 1).map(n => (
+                        <option key={n} value={n.toString()}>{n}{n === 12 ? '+' : ''}</option>
+                      ))
+                  }
+                </select>
               </div>
             </div>
+
+            {/* Nombre de places + Date de mise en circulation */}
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Prix à neuf*</label>
-                <input
-                  type="number"
-                  value={formData.prixNeuf}
+                <label className="quoteformw-label">Nombre de places*</label>
+                <select
+                  value={formData.nbPlaces}
                   onChange={(e) => {
-                    handleInputChange(e, 'prixNeuf');
-                    setFormData({ ...formData, prixNeuf: e.target.value });
+                    handleInputChange(e, 'nbPlaces');
+                    setFormData({ ...formData, nbPlaces: e.target.value });
                   }}
                   className="quoteformw-input"
-                  placeholder="FCFA"
                   required
-                />
+                >
+                  <option value="">Sélectionner</option>
+                  {[3,4,5,6,7,8].map(n => (
+                    <option key={n} value={n.toString()}>{n}{n === 8 ? '+' : ''}</option>
+                  ))}
+                </select>
               </div>
+
               <div>
-                <label className="quoteformw-label">Prix estimé de la vente*</label>
-                <input
-                  type="number"
-                  value={formData.prixVente}
-                  onChange={(e) => {
-                    handleInputChange(e, 'prixVente');
-                    setFormData({ ...formData, prixVente: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  placeholder="FCFA"
-                  required
-                />
-              </div>
-            </div>
-            <div className="quoteformw-grid">
-              <div>
-                <label className="quoteformw-label">Date 1ère mise en circulation*</label>
+                <label className="quoteformw-label">Date de mise en circulation*</label>
                 <input
                   type="date"
                   value={formData.dateMiseCirculation}
@@ -530,99 +506,57 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                   required
                 />
               </div>
+            </div>
+
+            {/* Valeurs */}
+            <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Nombre de place assise*</label>
+                <label className="quoteformw-label">Valeur neuve (FCFA)*</label>
                 <input
                   type="number"
-                  value={formData.nbPlaces}
+                  value={formData.prixNeuf}
                   onChange={(e) => {
-                    handleInputChange(e, 'nbPlaces');
-                    setFormData({ ...formData, nbPlaces: e.target.value });
+                    handleInputChange(e, 'prixNeuf');
+                    setFormData({ ...formData, prixNeuf: e.target.value });
                   }}
                   className="quoteformw-input"
+                  placeholder="Ex: 12 000 000"
                   required
                 />
               </div>
-            </div>
-            <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Ville/Zone de stationnement*</label>
-                <select
-                  value={formData.ville}
-                  onChange={(e) => {
-                    handleInputChange(e, 'ville');
-                    setFormData({ ...formData, ville: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  required
-                >
-                  <option value="">Sélectionner</option>
-                  <option value="Abidjan">Abidjan</option>
-                  <option value="Bouaké">Bouaké</option>
-                  <option value="Yamoussoukro">Yamoussoukro</option>
-                  <option value="San Pedro">San Pedro</option>
-                  <option value="Autre">Autre</option>
-                </select>
-              </div>
-              <div>
-                <label className="quoteformw-label">Couleur du véhicule*</label>
+                <label className="quoteformw-label">Valeur vénale (actuelle) (FCFA)*</label>
                 <input
-                  type="text"
-                  value={formData.couleur}
+                  type="number"
+                  value={formData.prixVente}
                   onChange={(e) => {
-                    handleInputChange(e, 'couleur');
-                    setFormData({ ...formData, couleur: e.target.value });
+                    handleInputChange(e, 'prixVente');
+                    setFormData({ ...formData, prixVente: e.target.value });
                   }}
                   className="quoteformw-input"
+                  placeholder="Ex: 6 500 000"
                   required
                 />
               </div>
             </div>
+
+            {/* Usage */}
             <div className="quoteformw-grid">
               <div>
-                <label className="quoteformw-label">Usage principal du véhicule*</label>
+                <label className="quoteformw-label">Usage du véhicule*</label>
                 <select
                   value={formData.usagePrincipal}
                   onChange={(e) => {
                     handleInputChange(e, 'usagePrincipal');
-                    setFormData({ ...formData, usagePrincipal: e.target.value as "personnel" | "professionnel" | "mixte" });
+                    setFormData({ ...formData, usagePrincipal: e.target.value as 'personnel' | 'professionnel' | 'mixte' });
                   }}
                   className="quoteformw-input"
                   required
                 >
                   <option value="">Sélectionner</option>
-                  <option value="personnel">Personnel</option>
+                  <option value="personnel">Privé</option>
                   <option value="professionnel">Professionnel</option>
-                  <option value="mixte">Mixte</option>
                 </select>
-              </div>
-              <div>
-                <label className="quoteformw-label">Kilométrage annuel (km)*</label>
-                <input
-                  type="number"
-                  value={formData.kilometrageAnnuel}
-                  onChange={(e) => {
-                    handleInputChange(e, 'kilometrageAnnuel');
-                    setFormData({ ...formData, kilometrageAnnuel: Number(e.target.value) });
-                  }}
-                  className="quoteformw-input"
-                  required
-                />
-              </div>
-            </div>
-            <div className="quoteformw-grid">
-              <div>
-                <label className="quoteformw-label">Niveau de franchise souhaité (FCFA)*</label>
-                <input
-                  type="number"
-                  value={formData.niveauFranchise}
-                  onChange={(e) => {
-                    handleInputChange(e, 'niveauFranchise');
-                    setFormData({ ...formData, niveauFranchise: Number(e.target.value) });
-                  }}
-                  className="quoteformw-input"
-                  required
-                />
               </div>
             </div>
           </div>
@@ -667,58 +601,51 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                 </select>
               </div>
             </div>
-            <div className="quoteformw-grid">
-              <div style={{ gridColumn: '1 / span 2' }}>
-                <label className="quoteformw-label">Avez-vous une préférence pour une compagnie particulière ?</label>
-                <select
-                  value={formData.preferenceCompagnie}
-                  onChange={(e) => {
-                    handleInputChange(e, 'preferenceCompagnie');
-                    setFormData({ ...formData, preferenceCompagnie: e.target.value });
-                  }}
-                  className="quoteformw-input"
-                  required
-                >
-                  <option value="NON">NON</option>
-                  <option value="OUI">OUI</option>
-                </select>
-              </div>
-            </div>
-            <div className="quoteformw-grid">
-              <div>
-                <label className="quoteformw-label">Formule d'assurance*</label>
-                <div className="quoteformw-radio-group">
-                  <label><input type="radio" name="formule" value="Tiers Simple" checked={formData.formule === 'Tiers Simple'} onChange={(e) => {
-                    handleInputChange(e, 'formule');
-                    setFormData({...formData, formule: e.target.value});
-                  }} required /> Tiers Simple</label>
-                  <label><input type="radio" name="formule" value="Tiers Complet" checked={formData.formule === 'Tiers Complet'} onChange={(e) => {
-                    handleInputChange(e, 'formule');
-                    setFormData({...formData, formule: e.target.value});
-                  }} required /> Tiers Complet</label>
-                  <label><input type="radio" name="formule" value="Tous risques" checked={formData.formule === 'Tous risques'} onChange={(e) => {
-                    handleInputChange(e, 'formule');
-                    setFormData({...formData, formule: e.target.value});
-                  }} required /> Tous risques</label>
-                </div>
-              </div>
-              <div>
-                <label className="quoteformw-label">Type de souscription*</label>
-                <div className="quoteformw-radio-group">
-                  <label>
-                    <input
-                      type="radio"
-                      name="typeSouscription"
-                      value="Prédefinie"
-                      checked={formData.typeSouscription === 'Prédefinie'}
-                      onChange={(e) => {
-                        handleInputChange(e, 'typeSouscription');
-                        setFormData({...formData, typeSouscription: e.target.value});
+            {/* Champ “Préférence compagnie” masqué selon consigne */}
+            {/* <div className="quoteformw-grid"> ... </div> */}
+            {/* Nouvelle section “Quelle formule souhaitez‑vous ?” avec cartes enrichissables dynamiquement */}
+            <div className="quoteformw-formules" role="group" aria-label="Choix de la formule">
+              <h4 className="quoteformw-formules-title">Quelle formule souhaitez‑vous ?</h4>
+              <p className="quoteformw-formules-help">Pas d’inquiétude, vous pourrez modifier cette information sur la page de résultats.</p>
+
+              <div className="quoteformw-formules-grid">
+                {[
+                  {key: 'Tiers Simple', title: 'Tiers', checks: ['Responsabilité civile'], crosses: ['Vol incendie', 'Dommage tous accidents']},
+                  {key: 'Tiers Complet', title: 'Vol & Incendie', checks: ['Responsabilité civile','Vol incendie'], crosses: ['Dommage tous accidents']},
+                  {key: 'Tous risques', title: 'Tous risques', checks: ['Responsabilité civile','Vol incendie','Dommage tous accidents'], crosses: []},
+                ].map((f) => {
+                  const active = formData.formule === f.key;
+                  return (
+                    <button
+                      key={f.key}
+                      type="button"
+                      className={`formule-card${active ? ' active' : ''}`}
+                      onClick={() => {
+                        handleInputChange({ target: { value: f.key } } as unknown as React.ChangeEvent<HTMLInputElement>, 'formule');
+                        setFormData({ ...formData, formule: f.key });
                       }}
-                      required
-                    /> Choisir une Formule prédéfinie
-                  </label>
-                </div>
+                      aria-pressed={active}
+                    >
+                      <div className="formule-card-header">
+                        <span className={`formule-radio${active ? ' checked' : ''}`} aria-hidden />
+                        <span className="formule-title">{f.title}</span>
+                      </div>
+                      <ul className="formule-features" aria-label={`Garanties incluses pour ${f.title}`}>
+                        {f.checks.map((c) => (
+                          <li key={c} className="ok">✓ {c}</li>
+                        ))}
+                        {f.crosses.map((c) => (
+                          <li key={c} className="ko">✕ {c}</li>
+                        ))}
+                      </ul>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Emplacement extensible: offres partenaires dynamiques */}
+              <div className="formule-partners-note">
+                Cette section pourra être enrichie dynamiquement par les offres de nos partenaires (prix, garanties, promos).
               </div>
             </div>
             <div className="quoteformw-info-box" style={{ marginTop: 16 }}>
@@ -741,93 +668,7 @@ const QuoteFormComponent: React.FC<QuoteFormProps> = (props) => {
                 </div>
               )}
             </div>
-            <div className="quoteformw-grid" style={{ marginTop: '16px' }}>
-              <div style={{ gridColumn: '1 / span 2' }}>
-                <label className="quoteformw-label">Options supplémentaires</label>
-                <div className="quoteformw-checkbox-group">
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <input
-                      type="checkbox"
-                      name="assistanceRoute"
-                      checked={formData.optionsDetaillees?.assistanceRoute || false}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        setFormData(prev => {
-                          const updated = {
-                            ...prev.optionsDetaillees,
-                            assistanceRoute: checked
-                          };
-                          onInputChange('optionsDetaillees', updated);
-                          return { ...prev, optionsDetaillees: updated };
-                        });
-                      }}
-                      style={{ width: '16px', height: '16px' }}
-                    />
-                    <span>Assistance routière</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <input
-                      type="checkbox"
-                      name="vehiculeRemplacement"
-                      checked={formData.optionsDetaillees?.vehiculeRemplacement || false}
-                      onChange={(e) => {
-                        const updated = {
-                          ...formData.optionsDetaillees,
-                          vehiculeRemplacement: e.target.checked
-                        };
-                        setFormData(prev => ({
-                          ...prev,
-                          optionsDetaillees: updated
-                        }));
-                        onInputChange('optionsDetaillees', updated);
-                      }}
-                      style={{ width: '16px', height: '16px' }}
-                    />
-                    <span>Véhicule de remplacement</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <input
-                      type="checkbox"
-                      name="brisGlace"
-                      checked={formData.optionsDetaillees?.brisGlace || false}
-                      onChange={(e) => {
-                        const updated = {
-                          ...formData.optionsDetaillees,
-                          brisGlace: e.target.checked
-                        };
-                        setFormData({
-                          ...formData,
-                          optionsDetaillees: updated
-                        });
-                        onInputChange('optionsDetaillees', updated);
-                      }}
-                      style={{ width: '16px', height: '16px' }}
-                    />
-                    <span>Bris de glace</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <input
-                      type="checkbox"
-                      name="protectionJuridique"
-                      checked={formData.optionsDetaillees?.protectionJuridique || false}
-                      onChange={(e) => {
-                        const updated = {
-                          ...formData.optionsDetaillees,
-                          protectionJuridique: e.target.checked
-                        };
-                        setFormData({
-                          ...formData,
-                          optionsDetaillees: updated
-                        });
-                        onInputChange('optionsDetaillees', updated);
-                      }}
-                      style={{ width: '16px', height: '16px' }}
-                    />
-                    <span>Protection juridique</span>
-                  </label>
-                </div>
-              </div>
-            </div>
+            
           </div>
         )}
         {/* Navigation Buttons */}

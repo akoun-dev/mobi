@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout, onCompareClick }) => {
           aria-label="Retour à l'accueil"
         >
           <Car className="car-icon" aria-hidden="true" />
-          <span className="brand">NOLI Motor</span>
+          <span className="brand">NOLI</span>
         </div>
         <button className="hamburger" onClick={toggleMenu} aria-label="Menu">
           <Menu />

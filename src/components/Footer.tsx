@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="footer-col">
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
             <Car style={{ color: '#3B82F6', width: 32, height: 32, marginRight: 10 }} />
-            <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>NOLI Motor</span>
+            <span style={{ color: '#fff', fontWeight: 700, fontSize: 22 }}>NOLI </span>
           </div>
           <div style={{ marginBottom: 16 }}>
             Votre comparateur d'assurance auto de confiance en Côte d'Ivoire.<br />
@@ -46,12 +46,12 @@ const Footer = () => {
           <ul className="footer-list">
             <li>📍 Abidjan, Côte d'Ivoire</li>
             <li>📞 +225 XX XX XX XX XX</li>
-            <li>✉️ contact@nolimotor.ci</li>
+            <li>✉️ contact@noli.ci</li>
           </ul>
         </div>
       </div>
       <div className="footer-bottom">
-        © {new Date().getFullYear()} NOLI Motor. Tous droits réservés.
+        © {new Date().getFullYear()} NOLI . Tous droits réservés.
       </div>
     </footer>
   );

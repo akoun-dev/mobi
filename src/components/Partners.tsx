@@ -1,29 +1,48 @@
+import React from 'react';
 import './Partners.css';
 
-const partners = [
-  { name: 'NSIA Assurance', logo: '🛡️' },
-  { name: 'Atlantique Assurance', logo: '🌊' },
-  { name: 'Saham Assurance', logo: '⭐' },
-  { name: 'Allianz CI', logo: '🏆' },
-  { name: 'AXA Assurance', logo: '🔷' },
-  { name: 'Sunu Assurance', logo: '☀️' }
+const partnerGroups = [
+  {
+    title: 'Assurance auto',
+    logos: ['Allianz', 'AXA', 'Saham', 'SUNU', 'NSIA', 'Generali'],
+  },
+  {
+    title: 'Assurance santé',
+    logos: ['CNAM', 'MCI', 'Mutuelle+'],
+  },
+  {
+    title: 'Banques & crédits',
+    logos: ['SGCI', 'BNI', 'Ecobank'],
+  },
 ];
 
-const Partners = () => {
+const Partners: React.FC = () => {
   return (
     <section className="partners-section">
-      <div className="partners-container">
-        <h2 className="partners-title">
-          Nos Assureurs Partenaires
-        </h2>
-        <div className="partners-grid">
-          {partners.map((partner, index) => (
-            <div key={index} className="partner-card">
-              <div className="partner-logo">{partner.logo}</div>
-              <p className="partner-name">{partner.name}</p>
+      <div className="partners-header">
+        <h2 className="partners-title">Plus de 100 partenaires</h2>
+        <p className="partners-sub">Assureurs et partenaires sélectionnés avec soin</p>
+      </div>
+
+      <div className="partners-rows">
+        {partnerGroups.map((group, idx) => (
+          <div key={idx} className="partners-row">
+            <div className="partners-row-title">{group.title}</div>
+            <div className="partners-logos">
+              {group.logos.map((name, i) => (
+                <div key={i} className="partner-logo" aria-label={name} title={name}>
+                  <span className="partner-mark">{name}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="partners-cta">
+        <a href="#" onClick={(e) => e.preventDefault()} className="partners-link">
+          Voir tous nos partenaires →
+        </a>
       </div>
     </section>
   );

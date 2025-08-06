@@ -3,8 +3,8 @@ import './FAQ.css';
 
 const faqs = [
   {
-    question: "Qu'est-ce que NOLI Motor ?",
-    answer: "NOLI Motor est un comparateur d'assurance auto en Côte d'Ivoire. Il vous permet de comparer rapidement les offres de plusieurs assureurs et de choisir la meilleure couverture pour votre véhicule."
+    question: "Qu'est-ce que NOLI  ?",
+    answer: "NOLI  est un comparateur d'assurance auto en Côte d'Ivoire. Il vous permet de comparer rapidement les offres de plusieurs assureurs et de choisir la meilleure couverture pour votre véhicule."
   },
   {
     question: "Comment fonctionne la comparaison ?",
@@ -35,7 +35,7 @@ const FAQ = () => {
     <div className="faq-bg">
       <div className="faq-hero">
         <div className="faq-hero-title">Foire aux questions</div>
-        <div className="faq-hero-desc">Retrouvez ici les réponses aux questions les plus fréquentes sur NOLI Motor et la comparaison d'assurance auto.</div>
+        <div className="faq-hero-desc">Retrouvez ici les réponses aux questions les plus fréquentes sur NOLI  et la comparaison d'assurance auto.</div>
       </div>
       <div className="faq-container">
         <div className="faq-list">

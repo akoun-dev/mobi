@@ -1,9 +1,19 @@
+/* Force hide containers marked as hidden so they don't occupy space */
+.quoteformw-hidden {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  visibility: hidden !important;
+  overflow: hidden !important;
+}
+
 .quoteformw-bg {
-  background: linear-gradient(135deg, 
-    var(--color-blue-bg) 0%, 
-    var(--color-bg-light) 25%, 
-    #F0F4F8 50%, 
-    var(--color-blue-bg) 75%, 
+  background: linear-gradient(135deg,
+    var(--color-blue-bg) 0%,
+    var(--color-bg-light) 25%,
+    #F0F4F8 50%,
+    var(--color-blue-bg) 75%,
     var(--color-blue-light) 100%);
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
@@ -274,6 +284,27 @@
   animation: field-fade-in 0.4s ease-out both;
 }
 
+/* Renforcement: groupes masqués ne doivent occuper aucun espace
+   IMPORTANT: ne cible QUE le conteneur marqué .quoteformw-hidden pour ne pas impacter les autres étapes */
+.quoteformw-hidden {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  visibility: hidden !important;
+  overflow: hidden !important;
+}
+
+/* Assurer que les groupes masqués ne prennent aucun espace (verrouille l'affichage) */
+.quoteformw-hidden {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  visibility: hidden !important;
+  overflow: hidden !important;
+}
+
 .quoteformw-grid > div:nth-child(1) { animation-delay: 0.1s; }
 .quoteformw-grid > div:nth-child(2) { animation-delay: 0.2s; }
 .quoteformw-grid > div:nth-child(3) { animation-delay: 0.3s; }
@@ -451,6 +482,138 @@ select.quoteformw-input {
   gap: 16px;
   margin-top: 32px;
   animation: nav-fade-in 0.5s ease-out 0.3s both;
+}
+
+/* ===== Formules (cartes) ===== */
+.quoteformw-formules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.quoteformw-formules-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #22314A;
+  margin: 0;
+}
+
+.quoteformw-formules-help {
+  color: var(--color-gray);
+  font-size: 0.95rem;
+  margin: 0 0 6px 0;
+}
+
+.quoteformw-formules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  align-items: stretch; /* aligne sur la même ligne et mêmes hauteurs */
+}
+
+@media (max-width: 740px) {
+  .quoteformw-formules-grid {
+    grid-template-columns: 1fr; /* pile en mobile */
+  }
+}
+
+.formule-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  text-align: left;
+  border: 1.5px solid #E5EAF1;
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px #22314A12;
+  min-height: 140px; /* cohérence de hauteur */
+}
+
+.formule-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-blue-light);
+  box-shadow: 0 6px 18px #22314A1F;
+}
+
+.formule-card.active {
+  border-color: var(--color-blue-main);
+  box-shadow: 0 8px 22px rgba(37,99,235,0.25);
+  background: linear-gradient(180deg, #ffffff 0%, #F6F8FB 100%);
+}
+
+.formule-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.formule-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #B0B8C1;
+  display: inline-block;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.formule-card.active .formule-radio,
+.formule-radio.checked {
+  border-color: var(--color-blue-main);
+  background: linear-gradient(90deg, var(--color-blue-main), var(--color-blue-vivid));
+}
+
+.formule-card.active .formule-radio::after,
+.formule-radio.checked::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  top: 4px;
+  left: 4px;
+}
+
+.formule-title {
+  font-weight: 700;
+  color: #22314A;
+  font-size: 1.05rem;
+}
+
+.formule-features {
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.formule-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.formule-features .ok {
+  color: #166534; /* vert foncé */
+}
+
+.formule-features .ko {
+  color: #7f1d1d; /* rouge foncé */
+}
+
+.formule-partners-note {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: var(--color-gray);
 }
 
 @keyframes nav-fade-in {
@@ -681,6 +844,79 @@ select.quoteformw-input {
   }
   100% {
     transform: rotate(45deg) scale(1);
+  }
+}
+
+/* Bannière d'information Step 0: 3 colonnes desktop, 1 colonne mobile */
+.quoteformw-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(34,49,74,0.08);
+}
+
+.quoteformw-banner .banner-item {
+  display: grid;                       /* grille pour alignement vertical parfait */
+  grid-template-columns: 36px 1fr;     /* colonne icône + colonne contenu */
+  align-items: center;                 /* centre verticalement icône + texte */
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border); /* bordure sur chaque card */
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(34,49,74,0.06);
+  min-height: 88px;                   /* assure une hauteur suffisante */
+  text-align: left;
+}
+
+.quoteformw-banner .banner-emoji {
+  font-size: 20px;          /* icône visuellement centrée dans 36x36 */
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;     /* grid pour centrage parfait */
+  place-items: center;      /* centre horizontal + vertical */
+  border-radius: 10px;
+  background: #F6F8FB;
+  flex-shrink: 0;
+}
+
+.quoteformw-banner .banner-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #22314A;
+  line-height: 1.25;
+  display: block;
+}
+
+.quoteformw-banner .banner-text {
+  margin: 4px 0 0 0;
+  font-size: 0.95rem;
+  color: var(--color-gray);
+  line-height: 1.35;
+  display: block;
+}
+
+@media (max-width: 740px) {
+  .quoteformw-banner {
+    grid-template-columns: 1fr;
+  }
+  .quoteformw-banner .banner-item {
+    grid-template-columns: 32px 1fr; /* icône un peu plus petite sur mobile */
+    padding: 14px;
+    min-height: 72px;
+  }
+  .quoteformw-banner .banner-emoji {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    border-radius: 8px;
   }
 }
 

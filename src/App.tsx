@@ -4,6 +4,7 @@ import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import Features from './components/Features';
 import Partners from './components/Partners';
+import Reviews from './components/Reviews.tsx';
 import QuoteForm from './components/QuoteForm';
 import Results from './components/Results';
 import QuoteDownloadModal from './components/QuoteDownloadModal';
@@ -76,7 +77,7 @@ const App: React.FC = () => {
   });
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [selectedQuote, setSelectedQuote] = useState<Quote | null>(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false); // inutilisé dans la maquette
   
   // État d'authentification
   const [user, setUser] = useState<User | null>(null);
@@ -220,18 +221,8 @@ const App: React.FC = () => {
     }));
   };
 
-  const nextStep = () => {
-    if (currentStep < 2) { // 0, 1, 2 (3 étapes au total)
-      setCurrentStep(currentStep + 1);
-    } else if (currentStep === 2) { // Dernière étape
-      setLoading(true);
-      setTimeout(() => {
-        setQuotes(mockQuotes);
-        setShowResults(true);
-        setLoading(false);
-      }, 2000);
-    }
-  };
+  // NOTE: Flux de maquette: onNextStep du QuoteForm force directement l'affichage des résultats.
+  // nextStep n'est plus utilisé ici pour éviter l'erreur ESLint "assigned but never used".
 
   const prevStep = () => {
     if (currentStep > 0) {
@@ -327,20 +318,10 @@ const App: React.FC = () => {
     trackEvent('CTA', 'Hero Compare Click');
     setShowQuoteForm(true);
     setShowResults(false);
-    setCurrentStep(0);
+    setCurrentStep(0); // démarrer à l'étape 0
   };
 
-  if (loading) {
-    return (
-      <div className="loading-bg">
-        <div className="loading-center">
-          <div className="loading-spinner"></div>
-          <p className="loading-title">Comparaison en cours...</p>
-          <p className="loading-desc">Analyse des meilleures offres pour vous</p>
-        </div>
-      </div>
-    );
-  }
+  // Écran de chargement désactivé dans la maquette statique (pas de loading)
 
   return (
     <Router>
@@ -353,6 +334,7 @@ const App: React.FC = () => {
                 <HeroSection onCompareClick={handleCompareClick} />
                 <Features />
                 <Partners />
+                <Reviews />
               </>
             )}
             {showQuoteForm && !showResults && (
@@ -361,7 +343,18 @@ const App: React.FC = () => {
                 formData={formData}
                 onInputChange={handleInputChange}
                 onOptionToggle={handleOptionToggle}
-                onNextStep={nextStep}
+                onNextStep={() => {
+                  // Avancer d'une étape dans le formulaire
+                  setCurrentStep((prev) => {
+                    const next = Math.min(prev + 1, 2);
+                    // Quand on vient de valider la dernière étape (2), on affiche les résultats
+                    if (next === 2 && prev === 2) {
+                      setQuotes(mockQuotes);
+                      setShowResults(true);
+                    }
+                    return next;
+                  });
+                }}
                 onPrevStep={prevStep}
                 onResetForm={resetForm}
                 onSubmit={(values) => {

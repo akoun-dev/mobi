@@ -34,7 +34,7 @@ const Assurance = () => (
         ))}
       </div>
       <div className="assurance-advantages">
-        <h2 className="assurance-advantages-title">Pourquoi choisir NOLI Motor ?</h2>
+        <h2 className="assurance-advantages-title">Pourquoi choisir NOLI ?</h2>
         <ul className="assurance-advantages-list">
           {avantages.map((a, i) => (
             <li key={i} className="assurance-advantage-item">{a.icon}<span>{a.text}</span></li>
