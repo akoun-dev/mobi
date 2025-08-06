@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './Reviews.css';
 
 type Review = {
@@ -44,27 +44,35 @@ const Stars: React.FC<{ value: number }> = ({ value }) => {
   return <div className="reviews-stars" aria-label={`${value} sur 5`}>{items}</div>;
 };
 
+const ReviewCard = memo(function ReviewCard({ r }: { r: Review }) {
+  return (
+    <article className="review-card" aria-label={`Avis de ${r.author}`}>
+      <Stars value={r.rating} />
+      <p className="review-text">“{r.text}”</p>
+      <div className="review-meta">
+        <span className="review-author">{r.author}</span>
+        <span className="dot" aria-hidden>•</span>
+        <span className="review-date">{r.date}</span>
+        <span className="dot" aria-hidden>•</span>
+        <span className="review-source">{r.source}</span>
+      </div>
+    </article>
+  );
+});
+
 const Reviews: React.FC = () => {
   return (
-    <section className="reviews-section">
-      <h2 className="reviews-title">Plus de 9,9 millions d’utilisateurs nous font confiance</h2>
-      <div className="reviews-grid">
-        {reviews.map((r, idx) => (
-          <div key={idx} className="review-card">
-            <Stars value={r.rating} />
-            <p className="review-text">“{r.text}”</p>
-            <div className="review-meta">
-              <span className="review-author">{r.author}</span>
-              <span className="dot">•</span>
-              <span className="review-date">{r.date}</span>
-              <span className="dot">•</span>
-              <span className="review-source">{r.source}</span>
-            </div>
+    <section className="reviews-section" aria-labelledby="reviews-title">
+      <h2 id="reviews-title" className="reviews-title">Plus de 9,9 millions d’utilisateurs nous font confiance</h2>
+      <div className="reviews-grid" role="list">
+        {reviews.map((r) => (
+          <div key={r.author} role="listitem">
+            <ReviewCard r={r} />
           </div>
         ))}
       </div>
       <div className="reviews-cta">
-        <a href="#" onClick={(e) => e.preventDefault()} className="reviews-link">
+        <a href="#" onClick={(e) => e.preventDefault()} className="reviews-link" aria-label="Voir plus d’avis clients">
           Voir plus d’avis clients →
         </a>
       </div>
@@ -72,4 +80,4 @@ const Reviews: React.FC = () => {
   );
 };
 
-export default Reviews;
+export default memo(Reviews);
